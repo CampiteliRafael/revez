@@ -30,6 +30,7 @@
 - Acompanhar indicadores adequados ao recurso, como correspondência de categoria e taxa de sugestões aceitas/editadas/rejeitadas; definir limites somente após estabelecer baseline.
 - Comparar mudanças de prompt/modelo no conjunto de referência antes de disponibilizar.
 - Registrar versão do modelo/configuração, tempo, estado e feedback humano; evitar logar texto sensível integralmente.
+- Antes do envio ao provedor, remover contatos e credenciais reconhecíveis e excluir dados financeiros, de saúde e anexos.
 - Monitorar timeout, indisponibilidade e retentativas; nunca deixar a falha da IA impedir a operação transacional.
 - Não alegar precisão, economia de tempo ou qualidade sem medição e contexto registrados.
 

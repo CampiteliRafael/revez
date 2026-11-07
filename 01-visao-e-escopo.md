@@ -1,6 +1,6 @@
 # Revez — visão e escopo do produto
 
-**Status:** visão aprovada como direção; público e regras operacionais pendentes.
+**Status:** visão aprovada como direção; público e papéis iniciais definidos, regras operacionais pendentes.
 
 ## Visão
 
@@ -13,10 +13,11 @@ Solicitações distribuídas por conversas e ferramentas podem perder contexto, 
 | Tema | Definição | Estado |
 |---|---|---|
 | Problema | Perda de contexto e visibilidade ao encaminhar solicitações | Proposto |
-| Público principal | Equipe interna ou atendimento a clientes | Pendente |
-| Operação | Fila e gestão principalmente na web; ações essenciais também no mobile | Proposto |
+| Público principal | Equipes de operação de empresas | Confirmado; operação interna ou atendimento a clientes ainda precisa ser delimitado |
+| Papéis iniciais | Solicitante, que registra e acompanha solicitações; Operador, que faz triagem e atendimento | Confirmados para o MVP; visibilidade e permissões detalhadas pendentes |
+| Operação | Ciclo completo da solicitação disponível na web e no mobile | Confirmado para o MVP; permissões detalhadas pendentes |
 | Valor | Histórico, responsável e próximo passo visíveis em um só fluxo | Proposto |
-| Apoio de IA | Resumo e classificação sugeridos, com revisão humana | Aprovado como direção; escopo final pendente |
+| Apoio de IA | Sugestão de resumo e categoria, com revisão humana | Definido para o MVP; provedor, retenção e tratamento de conteúdo proibido pendentes |
 | Dados | Indicadores operacionais derivados do histórico do produto | Proposto; métricas pendentes |
 
 ## Objetivos do projeto
@@ -29,9 +30,9 @@ Solicitações distribuídas por conversas e ferramentas podem perder contexto, 
 
 ## Uso responsável de IA
 
-- IA gera recomendações para resumir ou categorizar solicitações; não atribui, prioriza ou fecha pedidos sem ação humana.
+- IA sugere resumo e categoria a partir do título e da descrição; nenhuma alteração é aplicada sem revisão humana.
 - A aplicação deve continuar útil quando o provedor estiver indisponível.
-- Enviar ao provedor somente os dados necessários, com dados demonstrativos fictícios durante desenvolvimento.
+- Remover contatos e credenciais reconhecíveis antes do envio; não enviar dados financeiros, de saúde ou anexos. Usar dados demonstrativos fictícios durante desenvolvimento.
 - Tornar sugestões identificáveis e permitir aceitar, editar ou rejeitar.
 - Registrar modelo/provedor e versão de prompt/configuração usados, resultado e feedback necessário à avaliação, sem guardar conteúdo excessivo.
 - Avaliar resultados em exemplos de referência antes de alterar prompts ou modelos; não alegar qualidade sem medição.

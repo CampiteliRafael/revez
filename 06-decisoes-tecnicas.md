@@ -61,8 +61,8 @@ Registre aqui decisões que afetam implementação. Quando uma decisão mudar, a
 
 ## ADR-009 — IA aplicada
 
-- **Estado:** Confirmada como direção de produto; provedor/modelo pendentes.
-- **Decisão:** iniciar com resumo e classificação sugerida de solicitações. IA não atribui responsáveis nem altera prioridade/status automaticamente. Resultados passam por revisão humana.
+- **Estado:** Escopo inicial confirmado; provedor/modelo pendentes.
+- **Decisão:** sugerir resumo e categoria usando apenas título e descrição, com remoção de contatos e credenciais reconhecíveis. Não enviar informações financeiras, de saúde ou anexos. Toda saída exige revisão humana e não altera automaticamente campos da solicitação.
 - **Motivo:** aplicar IA a uma necessidade do fluxo, mantendo controle e rastreabilidade.
 - **Consequências:** camada de provedor pequena, saída validada, registro de versão/estado/feedback e tratamento de indisponibilidade.
 
@@ -87,10 +87,9 @@ Registre aqui decisões que afetam implementação. Quando uma decisão mudar, a
 
 ## Decisões de produto pendentes
 
-- Público, papéis e autorização.
-- Autenticação e gestão de sessão.
-- Campos, status, prioridades e transições de solicitação.
-- Provedor/modelo de IA, política de envio/retensão de dados e orçamento.
+- Delimitação entre operação interna e atendimento a clientes; visibilidade e matriz de permissões dos papéis Solicitante e Operador.
+- Estratégia de autenticação, sessão e gestão de usuários; matriz de permissões.
+- Provedor/modelo de IA, retenção e orçamento; tratamento de solicitações com conteúdo proibido.
 - Métricas, limites de qualidade e conjunto de avaliação.
 - Se pgvector e busca semântica entram no MVP ou na fase seguinte.
 - Nome final para publicação externa.

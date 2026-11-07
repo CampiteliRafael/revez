@@ -30,10 +30,10 @@
 
 | ID | História | Critérios de aceite | Dependências / tamanho |
 |---|---|---|---|
-| P-01 | Como responsável pelo produto, quero definir quem usa o Revez para que permissões e telas correspondam a um contexto real. | Público principal e ao menos dois papéis descritos; um papel pode ser omitido se o MVP for individual. | Nenhuma / S |
-| P-02 | Quero definir campos, status, prioridades e transições para que solicitações tenham ciclo de vida explícito. | Campos obrigatórios, valores permitidos e transições documentados com exemplos. | P-01 / S |
-| P-03 | Quero definir a primeira função de IA e dados enviados para que a automação seja útil e segura. | Resumo/classificação escolhidos; campos enviados, revisão humana e dados proibidos definidos. | P-01, P-02 / S |
-| P-04 | Quero escolher critérios do MVP e métrica de sucesso para limitar o trabalho. | MVP contém no máximo um fluxo principal por plataforma e uma capacidade de IA; itens posteriores ficam fora do MVP. | P-01 a P-03 / S |
+| P-01 | Como responsável pelo produto, quero definir quem usa o Revez para que permissões e telas correspondam a um contexto real. | Público principal: equipes de operação de empresas. Papéis iniciais: Solicitante, que registra e acompanha solicitações, e Operador, que faz triagem e atendimento. | Nenhuma / S — definição inicial concluída; visibilidade e permissões detalhadas continuam pendentes |
+| P-02 | Quero definir campos, status, prioridades e transições para que solicitações tenham ciclo de vida explícito. | Sete campos obrigatórios na criação; categorias TI, Infraestrutura, Administrativo, Compras e RH; prioridades Baixa, Média e Alta; estados e transições iniciais registrados em `02-requisitos.md`, com exemplo fictício. | P-01 / S — definição inicial concluída |
+| P-03 | Quero definir a primeira função de IA e dados enviados para que a automação seja útil e segura. | Resumo e categoria sugeridos a partir do título e descrição; contatos/credenciais reconhecíveis removidos; dados financeiros, de saúde e anexos proibidos; revisão humana obrigatória e sem alteração automática de campos. | P-01, P-02 / S — definição inicial concluída; provedor, retenção e tratamento de conteúdo proibido detectado pendentes |
+| P-04 | Quero escolher critérios do MVP e métrica de sucesso para limitar o trabalho. | Ciclo completo de solicitações e revisão de IA em Web e Mobile, com autenticação; métrica definida como mediana de horas corridas entre criação e conclusão, com meta após linha de base do piloto. | P-01 a P-03 / S — escopo inicial definido; estratégia de autenticação e permissões pendentes |
 
 ### Épico 1 — Fundação de engenharia
 
@@ -106,7 +106,7 @@ Há dependências que podem ser ajustadas conforme a disponibilidade de ambiente
 ## Política de escopo para uma pessoa
 
 - Fazer primeiro apenas web responsiva; iniciar mobile depois que API e fluxo web estiverem estáveis.
-- Começar IA com uma tarefa única (resumo **ou** categoria). A segunda só entra após primeira avaliação funcional.
+- Começar com uma análise que sugere resumo e categoria; não ampliar para outras funções de IA antes da avaliação funcional.
 - Redis/BullMQ entram desde a fundação por decisão do projeto, mas o worker só ganha lógica de IA no épico 5.
 - Deixar embeddings/pgvector, notificações, anexos, offline completo e dashboards avançados fora do MVP.
 - Não iniciar próxima história enquanto a atual não tiver critério de aceite verificado e documentação essencial atualizada.

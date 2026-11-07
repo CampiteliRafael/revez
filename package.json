@@ -1,0 +1,21 @@
+{
+  "name": "revez",
+  "private": true,
+  "packageManager": "pnpm@12.18.0",
+  "scripts": {
+    "workspace:list": "corepack pnpm --recursive list --depth -1",
+    "lint": "corepack pnpm --recursive --if-present lint",
+    "typecheck": "corepack pnpm --recursive --if-present typecheck",
+    "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json}\" \"packages/**/*.{ts,tsx,js,jsx,json}\" \"*.{json,mjs,yaml}\"",
+    "format:check": "prettier --check \"apps/**/*.{ts,tsx,js,jsx,json}\" \"packages/**/*.{ts,tsx,js,jsx,json}\" \"*.{json,mjs,yaml}\"",
+    "check": "corepack pnpm run lint && corepack pnpm run typecheck && corepack pnpm run format:check"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.72.1"
+  }
+}

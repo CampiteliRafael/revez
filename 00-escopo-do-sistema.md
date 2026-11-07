@@ -14,13 +14,13 @@ O Revez organiza solicitações de trabalho entre pessoas e equipes. O produto d
 
 **Stack:** Next.js App Router, React, TypeScript e Tailwind CSS.
 
-Interface principal para operar a fila em telas maiores. Inclui criar e consultar solicitações, pesquisar e filtrar, abrir detalhes, comentar, atualizar campos autorizados e visualizar indicadores acordados. Exibe sugestões de IA para revisão e decisão humana.
+Interface para operar o ciclo completo da solicitação: criar e consultar a fila, abrir detalhes, comentar e atualizar até a conclusão. Também exibe sugestões de IA para revisão humana e indicadores acordados.
 
 ### B — Revez Mobile
 
 **Stack:** React Native, Expo, Expo Router e TypeScript.
 
-Aplicativo para consultar fila, pesquisar, criar solicitações e acompanhar detalhes, comentários e histórico; ações de atualização dependerão das permissões aprovadas. Deve tratar carregamento, falha e conectividade limitada. Modo offline completo, push e anexos ficam fora do primeiro escopo.
+Aplicativo para executar o ciclo completo da solicitação: consultar fila, pesquisar, criar, acompanhar detalhes e histórico, comentar e atualizar até a conclusão. Deve tratar carregamento, falha e conectividade limitada. Modo offline completo, push e anexos ficam fora do primeiro escopo.
 
 ### C — Revez API
 
@@ -32,7 +32,7 @@ Fonte das regras de negócio e dos dados. Responsável por autenticação/autori
 
 **Stack:** Node.js, TypeScript, BullMQ e Redis.
 
-Processa tarefas demoradas fora do ciclo da requisição HTTP: resumo e classificação de solicitações, recomendações e geração/atualização de embeddings quando a busca semântica entrar no escopo. Deve suportar tentativas controladas, estados de processamento, falhas observáveis e proteção contra resultados duplicados. A IA gera recomendações; não executa atribuições nem altera prioridade automaticamente.
+Processa tarefas demoradas fora do ciclo da requisição HTTP: sugestões de resumo e categoria de solicitações e, em fases posteriores, recomendações e geração/atualização de embeddings quando a busca semântica entrar no escopo. Deve suportar tentativas controladas, estados de processamento, falhas observáveis e proteção contra resultados duplicados. A IA não altera automaticamente campos da solicitação.
 
 ### E — Dados e recursos de IA
 
@@ -89,7 +89,7 @@ Não usar vários gerenciadores globais em paralelo. Estado local fica nos compo
 - web, mobile, API e worker iniciados do zero;
 - PostgreSQL e Redis em ambiente local via Compose;
 - fila para pelo menos um processamento assíncrono de IA;
-- sugestão de resumo e/ou categoria com revisão humana;
+- sugestão de resumo e categoria, a partir de título e descrição, com revisão humana;
 - histórico de mudanças e feedback sobre sugestões;
 - métricas operacionais básicas, depois de definidas;
 - testes de regras, integração da API e fluxo web crítico;
@@ -106,7 +106,7 @@ Não usar vários gerenciadores globais em paralelo. Estado local fica nos compo
 
 ## 6. Modelo de dados inicial
 
-Entidades candidatas: `User`, `Team`, `Request`, `Comment`, `RequestEvent`, `AiSuggestion` e, se a busca semântica for aprovada, `RequestEmbedding`. Campos, relacionamentos, retenção, papéis e transições precisam de definição antes das migrations.
+Entidades candidatas: `User`, `Team`, `Request`, `Comment`, `RequestEvent`, `AiSuggestion` e, se a busca semântica for aprovada, `RequestEmbedding`. Campos e transições iniciais já foram definidos; relacionamentos, retenção e permissões detalhadas precisam de definição antes das migrations.
 
 ## 7. Critérios de aceite do sistema
 
@@ -121,11 +121,10 @@ Entidades candidatas: `User`, `Team`, `Request`, `Comment`, `RequestEvent`, `AiS
 
 ## 8. Decisões de produto pendentes
 
-1. O público é uma equipe interna, atendimento ao cliente ou ambos?
-2. Quais papéis, visibilidades e permissões existem?
-3. Quais campos, categorias, prioridades e transições terá uma solicitação?
-4. Login e gestão de usuários entram no primeiro MVP?
-5. Qual provedor/modelo de IA será usado e quais dados poderão ser enviados?
-6. Quais métricas serão exibidas e como serão calculadas?
-7. Qual critério define qualidade aceitável de resumo/classificação?
-8. Qual será o nome final antes de publicação externa?
+1. O público principal são equipes de operação de empresas; a operação é interna, de atendimento ao cliente ou ambas?
+2. Os papéis iniciais são Solicitante e Operador; quais visibilidades e permissões cada um terá?
+3. Qual estratégia de login, sessão e gestão de usuários será usada no MVP?
+4. Qual provedor/modelo de IA será usado e quais dados poderão ser enviados?
+5. Quais métricas serão exibidas e como serão calculadas?
+6. Qual critério define qualidade aceitável de resumo/classificação?
+7. Qual será o nome final antes de publicação externa?

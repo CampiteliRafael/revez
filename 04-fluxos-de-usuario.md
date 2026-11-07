@@ -6,7 +6,7 @@
 
 ```mermaid
 flowchart TD
-    A[Abrir web ou mobile] --> B[Consultar fila]
+    A[Autenticar e abrir web ou mobile] --> B[Consultar fila]
     B --> C{Resultado}
     C -->|Itens| D[Pesquisar, filtrar e abrir detalhes]
     C -->|Vazia| E[Orientar criação ou remoção de filtros]
@@ -22,12 +22,12 @@ flowchart TD
 ## Fluxo de sugestão de IA
 
 1. Após criação ou ação explícita, a API informa que a análise está pendente e enfileira o job.
-2. O worker processa o pedido e grava resumo/categoria ou estado de falha.
+2. O worker usa título e descrição para sugerir resumo/categoria e grava o resultado ou estado de falha.
 3. A interface atualiza o estado da análise e apresenta a sugestão com indicação de que foi gerada por IA.
 4. A pessoa revisa e aceita, edita ou rejeita a sugestão.
 5. A API guarda a revisão como evento para histórico e avaliação.
 
-Não aplicar silenciosamente prioridade, responsável, status ou equipe com base no resultado do modelo. Se o serviço estiver indisponível, a solicitação continua disponível e a pessoa pode seguir o fluxo normal.
+Nenhum campo da solicitação é alterado automaticamente com base no resultado do modelo. Se o serviço estiver indisponível, a solicitação continua disponível e a pessoa pode seguir o fluxo normal.
 
 ## Estados que a interface deve comunicar
 
@@ -39,7 +39,7 @@ Não aplicar silenciosamente prioridade, responsável, status ou equipe com base
 
 ## Jornada para criar e acompanhar
 
-1. Abrir formulário de criação e preencher campos que forem definidos.
+1. Autenticar, abrir o formulário de criação e preencher os sete campos obrigatórios definidos em `02-requisitos.md`.
 2. Ver validação por campo e enviar.
 3. Receber confirmação da API sem esperar resposta de IA.
 4. Consultar item em web ou mobile conforme permissões.

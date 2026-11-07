@@ -109,9 +109,8 @@ Docker Compose sobe PostgreSQL e Redis e, quando útil, API/worker. Next.js e Ex
 
 ## Decisões arquiteturais ainda abertas
 
-- Papéis, autenticação e estratégia de sessão.
-- Provedor de IA, dados enviados, retenção e limites de custo.
+- Estratégia de autenticação e sessão, e matriz de permissões dos papéis.
+- Provedor/modelo de IA, retenção e limites de custo; tratamento quando conteúdo proibido for detectado.
 - Quando enfileirar análise e como reprocessar falhas manualmente.
-- Campos e transições de solicitação e comentários.
 - Métricas operacionais e avaliação de qualidade.
 - Se busca semântica com pgvector é necessária para o MVP ou fase seguinte.
