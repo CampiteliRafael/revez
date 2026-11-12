@@ -42,7 +42,7 @@ O arquivo contém frames editáveis, com componentes de interface reutilizáveis
 - Os números e tendências da visão geral são conteúdo ilustrativo. Definir e validar fórmulas, janela de tempo, fuso e permissões antes de ligar aos dados reais.
 - As telas podem conter textos e exemplos visuais que não correspondam às regras iniciais de campos, status, prioridades e transições definidas em `02-requisitos.md`; os critérios documentados prevalecem. Visibilidade e permissões dos papéis ainda dependem de aprovação.
 - Os frames de IA mostram resumo e categoria como sugestões revisáveis, geradas a partir de título e descrição; provedor, retenção, tratamento de conteúdo proibido detectado e avaliação permanecem decisões pendentes.
-- Autenticação está no escopo do MVP, mas telas de login/recuperação, convite/membros da equipe, configurações e administração não estão desenhadas. A estratégia de sessão e as permissões detalhadas ainda precisam ser definidas.
+- SSO via Keycloak está no escopo do MVP, mas telas de login/recuperação, convite/membros da equipe, configurações e administração não estão desenhadas. A integração visual com o provedor e detalhes técnicos do fluxo ainda precisam ser definidos.
 - O protótipo não define comportamento de acessibilidade por completo. Ao implementar, validar navegação por teclado, leitor de tela, foco, contraste e áreas de toque.
 
 ## Próximo uso na implementação

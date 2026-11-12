@@ -85,10 +85,19 @@ Registre aqui decisões que afetam implementação. Quando uma decisão mudar, a
 - **Decisão:** Vitest para API/worker/web, Jest Expo com React Native Testing Library para mobile, Playwright para fluxos web críticos e GitHub Actions para lint, tipos, testes e builds.
 - **Consequências:** manter número de runners controlado; definir cobertura com base no risco, sem perseguir percentual arbitrário.
 
+## ADR-013 — Identidade e papéis
+
+- **Estado:** Confirmada; detalhes de integração pendentes.
+- **Decisão:** usar Keycloak para SSO e gerenciamento de usuários. Um grupo do Keycloak identifica Operadores; demais usuários autenticados são Solicitantes. Web, mobile e API dependem da identidade autenticada pelo Keycloak; links de acesso por e-mail ficam fora do MVP.
+- **Autorização inicial:** ambos os papéis consultam todas as solicitações da empresa. Solicitantes criam solicitações e comentam nas próprias; Operadores comentam, atribuem e atualizam todas as solicitações da empresa.
+- **Consequências:** a API continua responsável por aplicar autorização. Protocolo, claims, nome do grupo, configuração do provedor corporativo e limites técnicos da empresa devem ser definidos antes da implementação.
+- **Referência:** https://www.keycloak.org/docs/latest/server_admin/
+
 ## Decisões de produto pendentes
 
-- Delimitação entre operação interna e atendimento a clientes; visibilidade e matriz de permissões dos papéis Solicitante e Operador.
-- Estratégia de autenticação, sessão e gestão de usuários; matriz de permissões.
+- Delimitação entre operação interna e atendimento a clientes.
+- Limite técnico da empresa, edição de solicitações por Solicitantes e exclusão.
+- Protocolo SSO, claims de token, nome do grupo de Operadores e configuração do provedor corporativo no Keycloak.
 - Provedor/modelo de IA, retenção e orçamento; tratamento de solicitações com conteúdo proibido.
 - Métricas, limites de qualidade e conjunto de avaliação.
 - Se pgvector e busca semântica entram no MVP ou na fase seguinte.

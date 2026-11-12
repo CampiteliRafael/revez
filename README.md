@@ -32,7 +32,7 @@ O monorepo usa pnpm workspaces. Com Node.js e Corepack disponíveis, instale as 
 
 ### Serviços locais
 
-É necessário ter Docker com o plugin Docker Compose instalado. Copie `.env.example` para `.env` e ajuste as portas se já estiverem ocupadas. Os valores do exemplo são somente para desenvolvimento local; não os reutilize em ambientes compartilhados ou publicados.
+É necessário ter Docker com o plugin Docker Compose instalado. Copie `.env.example` para `.env` e ajuste as portas se já estiverem ocupadas; se alterar `POSTGRES_PORT`, atualize também a porta em `DATABASE_URL`. Os valores do exemplo são somente para desenvolvimento local; não os reutilize em ambientes compartilhados ou publicados.
 
 ```powershell
 Copy-Item .env.example .env
@@ -41,6 +41,12 @@ docker compose ps
 ```
 
 O Compose inicia PostgreSQL e Redis, publica as portas somente em `127.0.0.1` e aguarda health checks. Para parar os serviços sem apagar os dados persistidos nos volumes, execute `docker compose down`.
+
+O schema Prisma e a configuração de conexão ficam em `apps/api/prisma/` e `apps/api/prisma.config.ts`. Depois de criar `.env`, valide a configuração com `corepack pnpm --filter @revez/api prisma:validate`.
+
+### Integração contínua
+
+O GitHub Actions executa `pnpm check` em pull requests, pushes para `main` e execuções manuais. O comando instala as verificações de lint, tipos, testes dos pacotes que já os configurarem e formatação.
 
 ## Como interpretar as especificações
 
@@ -52,4 +58,4 @@ O Compose inicia PostgreSQL e Redis, publica as portas somente em `127.0.0.1` e 
 
 ## Próximas definições de produto
 
-O público principal, os papéis iniciais (Solicitante e Operador), as regras da solicitação, a função inicial de IA e o ciclo completo em Web e Mobile estão definidos. Autenticação está no MVP, mas estratégia de sessão e permissões ainda faltam; também falta delimitar operação interna versus atendimento a clientes, decidir provedor de IA, retenção e tratamento de conteúdo proibido, e estabelecer critérios de avaliação das sugestões. A métrica inicial será a mediana do tempo corrido entre criação e conclusão, com meta definida após a linha de base do piloto.
+O público principal, os papéis iniciais (Solicitante e Operador), as regras da solicitação, o acesso via Keycloak, a função inicial de IA e o ciclo completo em Web e Mobile estão definidos. Ainda faltam protocolo/claims de SSO e limite técnico da empresa, além de delimitar operação interna versus atendimento a clientes, decidir provedor de IA, retenção e tratamento de conteúdo proibido, e estabelecer critérios de avaliação das sugestões. A métrica inicial será a mediana do tempo corrido entre criação e conclusão, com meta definida após a linha de base do piloto.

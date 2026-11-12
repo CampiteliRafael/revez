@@ -6,9 +6,10 @@
     "workspace:list": "corepack pnpm --recursive list --depth -1",
     "lint": "corepack pnpm --recursive --if-present lint",
     "typecheck": "corepack pnpm --recursive --if-present typecheck",
-    "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json}\" \"packages/**/*.{ts,tsx,js,jsx,json}\" \"*.{json,mjs,yaml}\"",
-    "format:check": "prettier --check \"apps/**/*.{ts,tsx,js,jsx,json}\" \"packages/**/*.{ts,tsx,js,jsx,json}\" \"*.{json,mjs,yaml}\"",
-    "check": "corepack pnpm run lint && corepack pnpm run typecheck && corepack pnpm run format:check"
+    "test": "corepack pnpm --recursive --if-present test",
+    "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json}\" \"packages/**/*.{ts,tsx,js,jsx,json}\" \".github/**/*.{yml,yaml}\" \"*.{json,mjs,yaml}\"",
+    "format:check": "prettier --check \"apps/**/*.{ts,tsx,js,jsx,json}\" \"packages/**/*.{ts,tsx,js,jsx,json}\" \".github/**/*.{yml,yaml}\" \"*.{json,mjs,yaml}\"",
+    "check": "corepack pnpm run lint && corepack pnpm run typecheck && corepack pnpm run test && corepack pnpm run format:check"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

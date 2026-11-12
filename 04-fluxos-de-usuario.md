@@ -1,12 +1,12 @@
 # Fluxos de usuário
 
-**Status:** jornadas propostas; permissões e regras operacionais a definir.
+**Status:** jornadas propostas; SSO e permissões iniciais definidos em `02-requisitos.md`.
 
 ## Fluxo principal de solicitação
 
 ```mermaid
 flowchart TD
-    A[Autenticar e abrir web ou mobile] --> B[Consultar fila]
+    A[Autenticar via Keycloak e abrir web ou mobile] --> B[Consultar fila da empresa]
     B --> C{Resultado}
     C -->|Itens| D[Pesquisar, filtrar e abrir detalhes]
     C -->|Vazia| E[Orientar criação ou remoção de filtros]
@@ -39,7 +39,7 @@ Nenhum campo da solicitação é alterado automaticamente com base no resultado 
 
 ## Jornada para criar e acompanhar
 
-1. Autenticar, abrir o formulário de criação e preencher os sete campos obrigatórios definidos em `02-requisitos.md`.
+1. Autenticar via Keycloak, abrir o formulário de criação e preencher os sete campos obrigatórios definidos em `02-requisitos.md`.
 2. Ver validação por campo e enviar.
 3. Receber confirmação da API sem esperar resposta de IA.
 4. Consultar item em web ou mobile conforme permissões.
@@ -48,7 +48,8 @@ Nenhum campo da solicitação é alterado automaticamente com base no resultado 
 
 ## Navegação e decisões pendentes
 
-- Definir quais filas cada papel consegue consultar.
+- Definir o protocolo SSO, as claims do token e o nome do grupo de Operadores no Keycloak.
+- Delimitar tecnicamente a empresa dos dados e decidir edição por Solicitantes e exclusão.
 - Decidir se análise ocorre automaticamente ou por ação da pessoa.
 - Definir se usuário pode pedir nova análise e como limitar repetições/custos.
 - Definir ações que exigem confirmação e se alterações podem ser desfeitas.

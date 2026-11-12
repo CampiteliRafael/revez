@@ -59,3 +59,4 @@
 4. Sugestão fica pendente de revisão; aceitar/editar/rejeitar cria registro rastreável.
 5. Erros de API, banco, Redis e provedor têm comportamento previsível e logs seguros.
 6. O fluxo web essencial e os casos de uso críticos têm testes automatizados.
+7. A API rejeita requisições não autenticadas e aplica os limites de acesso de Solicitantes e Operadores, inclusive em filas, detalhes, comentários e atualizações.

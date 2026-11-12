@@ -5,6 +5,7 @@
 ## Princípios
 
 - Web e mobile são novos clientes e compartilham API, contrato e fonte de dados.
+- Keycloak provê SSO e gerencia usuários/grupos; a API aplica autorização com base na identidade e nos papéis autenticados.
 - API Node.js/TypeScript/Express em monólito modular; worker BullMQ como processo separado.
 - PostgreSQL guarda dados transacionais e histórico; Redis sustenta a fila de jobs.
 - IA é uma dependência externa opcional para o fluxo transacional: falha do provedor não deve impedir operações básicas.
@@ -109,7 +110,8 @@ Docker Compose sobe PostgreSQL e Redis e, quando útil, API/worker. Next.js e Ex
 
 ## Decisões arquiteturais ainda abertas
 
-- Estratégia de autenticação e sessão, e matriz de permissões dos papéis.
+- Protocolo SSO, claims de token, nome do grupo de Operadores e configuração do provedor corporativo no Keycloak.
+- Limite técnico da empresa e autorização para ações ainda não definidas, como edição por Solicitantes e exclusão.
 - Provedor/modelo de IA, retenção e limites de custo; tratamento quando conteúdo proibido for detectado.
 - Quando enfileirar análise e como reprocessar falhas manualmente.
 - Métricas operacionais e avaliação de qualidade.

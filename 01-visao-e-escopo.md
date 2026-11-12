@@ -14,8 +14,10 @@ Solicitações distribuídas por conversas e ferramentas podem perder contexto, 
 |---|---|---|
 | Problema | Perda de contexto e visibilidade ao encaminhar solicitações | Proposto |
 | Público principal | Equipes de operação de empresas | Confirmado; operação interna ou atendimento a clientes ainda precisa ser delimitado |
-| Papéis iniciais | Solicitante, que registra e acompanha solicitações; Operador, que faz triagem e atendimento | Confirmados para o MVP; visibilidade e permissões detalhadas pendentes |
-| Operação | Ciclo completo da solicitação disponível na web e no mobile | Confirmado para o MVP; permissões detalhadas pendentes |
+| Papéis iniciais | Solicitante, que registra e acompanha solicitações; Operador, que faz triagem e atendimento | Confirmados; papéis gerenciados no Keycloak |
+| Visibilidade e ações | Ambos veem solicitações da empresa; Solicitante cria e comenta as próprias; Operador comenta, atribui e atualiza todas | Definido para o MVP; detalhes técnicos dos limites da empresa pendentes |
+| Autenticação | SSO via Keycloak; grupos identificam Operadores e os demais usuários são Solicitantes | Confirmado para o MVP; configuração de tokens e provedor corporativo pendentes |
+| Operação | Ciclo completo da solicitação disponível na web e no mobile | Confirmado para o MVP |
 | Valor | Histórico, responsável e próximo passo visíveis em um só fluxo | Proposto |
 | Apoio de IA | Sugestão de resumo e categoria, com revisão humana | Definido para o MVP; provedor, retenção e tratamento de conteúdo proibido pendentes |
 | Dados | Indicadores operacionais derivados do histórico do produto | Proposto; métricas pendentes |

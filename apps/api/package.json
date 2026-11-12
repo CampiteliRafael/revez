@@ -4,6 +4,14 @@
   "private": true,
   "scripts": {
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit --project tsconfig.json"
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "prisma:validate": "prisma validate"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.10.1"
+  },
+  "devDependencies": {
+    "dotenv": "16.4.7",
+    "prisma": "7.10.1"
   }
 }

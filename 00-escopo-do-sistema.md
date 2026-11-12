@@ -121,10 +121,10 @@ Entidades candidatas: `User`, `Team`, `Request`, `Comment`, `RequestEvent`, `AiS
 
 ## 8. Decisões de produto pendentes
 
-1. O público principal são equipes de operação de empresas; a operação é interna, de atendimento ao cliente ou ambas?
-2. Os papéis iniciais são Solicitante e Operador; quais visibilidades e permissões cada um terá?
-3. Qual estratégia de login, sessão e gestão de usuários será usada no MVP?
+1. A operação será interna, de atendimento ao cliente ou ambas, e qual será o limite técnico da empresa?
+2. Qual protocolo/claims de SSO, provedor corporativo e grupo de Operadores serão configurados no Keycloak?
+3. Solicitantes poderão editar solicitações? Como exclusão, arquivamento e retenção funcionarão?
 4. Qual provedor/modelo de IA será usado e quais dados poderão ser enviados?
-5. Quais métricas serão exibidas e como serão calculadas?
+5. Quais métricas adicionais serão exibidas e como serão calculadas?
 6. Qual critério define qualidade aceitável de resumo/classificação?
 7. Qual será o nome final antes de publicação externa?

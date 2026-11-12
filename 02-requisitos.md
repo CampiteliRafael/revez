@@ -37,7 +37,12 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 ## Escopo inicial do MVP (P-04)
 
 - O ciclo de vida da solicitação — criar, consultar fila, abrir detalhes, comentar e atualizar até **Concluída** — deve funcionar tanto na Web quanto no Mobile.
-- Autenticação faz parte do MVP nas duas plataformas; estratégia de login, sessão e permissões ainda precisa ser definida.
+- Web, mobile e API usam SSO via Keycloak. Link de acesso por e-mail não faz parte do MVP.
+- O Keycloak gerencia usuários e papéis. Um grupo do Keycloak identifica Operadores; demais usuários autenticados são Solicitantes. O nome do grupo e as claims usadas na integração ainda serão definidos.
+- Solicitantes podem criar solicitações, consultar todas as solicitações da empresa e comentar apenas nas que criaram.
+- Operadores podem consultar, comentar, atribuir e atualizar todas as solicitações da empresa.
+- Ambos os papéis podem consultar solicitações de todas as categorias, inclusive RH.
+- A edição de solicitações por Solicitantes, exclusão e definição do limite técnico da empresa ainda precisam de decisão.
 - A revisão humana das sugestões de resumo e categoria estará disponível na Web e no Mobile.
 - Métrica inicial: mediana de horas corridas entre a criação e a primeira transição da solicitação para **Concluída**. Registrar a linha de base no piloto e definir uma meta depois de observá-la.
 
@@ -48,14 +53,14 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 | ID | Requisito | Critério de aceite | Estado |
 |---|---|---|---|
 | API-01 | Criar solicitação | Valida entrada, persiste registro e devolve identificador e datas | Proposto |
-| API-02 | Consultar fila | Retorna resultados paginados e somente visíveis ao usuário | Permissões/filtros pendentes |
+| API-02 | Consultar fila | Retorna resultados paginados de solicitações da empresa do usuário autenticado | Visibilidade por papel definida; limite técnico da empresa pendente |
 | API-03 | Consultar detalhes | Retorna campos, comentários e histórico acessíveis | Proposto |
-| API-04 | Atualizar solicitação | Valida transição e permissão; persiste alteração e evento | Transições definidas; permissões pendentes |
-| API-05 | Registrar comentário | Valida conteúdo/acesso e associa autor e data | Proposto |
+| API-04 | Atualizar solicitação | Valida transição e permissão; persiste alteração e evento | Operadores podem atualizar solicitações da empresa; transições definidas |
+| API-05 | Registrar comentário | Valida conteúdo/acesso e associa autor e data | Solicitantes comentam as próprias solicitações; Operadores comentam todas as da empresa |
 | API-06 | Publicar contrato OpenAPI | Contrato acompanha endpoints, schemas e erros implementados | Proposto |
 | API-07 | Enfileirar análise de IA | Após criação ou solicitação explícita, cria job rastreável sem bloquear resposta HTTP | Proposto |
 | API-08 | Consultar sugestões | Retorna resumo/categoria e estado da revisão humana | Proposto |
-| API-09 | Validar autenticação | API valida sessão e aplica autorização no servidor | Escopo MVP confirmado; mecanismo pendente |
+| API-09 | Validar autenticação | API valida credenciais SSO do Keycloak e aplica autorização no servidor | Keycloak confirmado; protocolo e claims pendentes |
 
 ### Web
 
@@ -66,7 +71,7 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 | WEB-03 | Consultar/atualizar detalhes | Exibe comentários, histórico e ações permitidas | Proposto |
 | WEB-04 | Revisar sugestão de IA | Pessoa pode aceitar, editar ou rejeitar; nenhuma sugestão é aplicada silenciosamente | Escopo MVP confirmado |
 | WEB-05 | Exibir indicadores | Mostra métricas definidas e período/filtros de cálculo | Métrica de sucesso inicial definida; indicadores adicionais pendentes |
-| WEB-06 | Autenticar | Permite acessar o fluxo com uma sessão autenticada | Escopo MVP confirmado; fluxo de acesso pendente |
+| WEB-06 | Autenticar | Encaminha ao SSO do Keycloak e retorna ao fluxo com sessão autenticada | Escopo MVP confirmado; configuração pendente |
 
 ### Mobile
 
@@ -75,9 +80,9 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 | MOB-01 | Consultar fila | Lista legível em telas mobile com estados de espera, vazio e erro | Proposto |
 | MOB-02 | Pesquisar e abrir detalhes | Filtros aprovados funcionam; detalhes mostram histórico e comentários | Proposto |
 | MOB-03 | Criar solicitação | Valida os campos e apresenta confirmação ou erro recuperável | Proposto |
-| MOB-04 | Atualizar/comentar | Ações autorizadas persistem na API e refletem o resultado | Permissões pendentes |
+| MOB-04 | Atualizar/comentar | Operadores atualizam solicitações da empresa; Solicitantes comentam apenas as próprias; API valida as permissões | Regras por papel definidas |
 | MOB-05 | Consultar sugestão de IA | Exibe sugestão e permite revisão humana conforme fluxo aprovado | Escopo MVP confirmado |
-| MOB-06 | Autenticar | Permite acessar o fluxo com uma sessão autenticada | Escopo MVP confirmado; fluxo de acesso pendente |
+| MOB-06 | Autenticar | Encaminha ao SSO do Keycloak e retorna ao fluxo com sessão autenticada | Escopo MVP confirmado; configuração pendente |
 
 ### Worker e IA
 
@@ -103,7 +108,7 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 | ID | Requisito | Critério de aceite |
 |---|---|---|
 | RNF-01 | Fonte única de dados | Web e mobile leem/escrevem pela API e observam dados persistidos |
-| RNF-02 | Segurança | API aplica autenticação/autorização no servidor; segredos fora do git |
+| RNF-02 | Segurança | API valida identidade e papéis do Keycloak e aplica autorização no servidor; segredos fora do git |
 | RNF-03 | Resiliência da IA | Falha de Redis, worker ou provedor não bloqueia funções transacionais essenciais |
 | RNF-04 | Integridade do histórico | Mudanças relevantes guardam autor, ação e data, conforme regra de retenção definida |
 | RNF-05 | Dados mínimos | Enviar à IA apenas título e descrição após remover contatos/credenciais reconhecíveis; não enviar dados financeiros, de saúde ou anexos; desenvolvimento usa dados fictícios |
@@ -114,8 +119,9 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 
 ## Regras de produto a definir
 
-- Delimitação entre operação interna e atendimento a clientes; visibilidade e matriz de permissões dos papéis Solicitante e Operador.
-- Regras de atribuição, edição, arquivamento e retenção do histórico.
+- Delimitação entre operação interna e atendimento a clientes; limite técnico da empresa.
+- Edição de solicitações por Solicitantes, exclusão, arquivamento e retenção do histórico.
+- Protocolo SSO, claims de token, nome do grupo de Operadores e configuração do provedor corporativo no Keycloak.
 - Se análises de IA serão automáticas na criação ou acionadas por pessoa.
 - Como bloquear ou tratar solicitações com conteúdo proibido e qual política de retenção o provedor terá.
 - Indicadores, período, filtros e regras de cálculo.
