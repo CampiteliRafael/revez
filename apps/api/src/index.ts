@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type ErrorRequestHandler } from "express";
 import { prisma } from "./prisma";
 
 const app = express();
@@ -14,6 +14,17 @@ app.get("/health", async (_req, res) => {
   }
 });
 
+const errorHandler: ErrorRequestHandler = (err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+console.error("Unhandled API error:", err);
+if(res.headersSent) {
+  next(err);
+  return;
+}
+res.status(500).json({ message: "Internal Server Error" });
+}
+
+app.use(errorHandler);
+  
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
