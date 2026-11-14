@@ -1,5 +1,7 @@
 import express, { type ErrorRequestHandler } from "express";
 import { prisma } from "./prisma";
+import { authMiddleware } from "./middleware/auth";
+import { requireOperator } from "./middleware/require-operator";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,6 +14,28 @@ app.get("/health", async (_req, res) => {
     console.error("Database health check failed", error);
     res.status(503).json({ status: "error", database: "unavailable" });
   }
+});
+
+app.get("/me", authMiddleware, (req, res) => {
+  if(!req.user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  return res.json({
+    userId: req.user.userId,
+    groups: req.user.groups,
+  });
+});
+
+app.get("/operator-check", authMiddleware, requireOperator, (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  return res.json({
+    message: "Operator access granted",
+    userId: req.user.userId,
+  });
 });
 
 const errorHandler: ErrorRequestHandler = (err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {

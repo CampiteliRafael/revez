@@ -17,7 +17,7 @@ function getKeycloakConfig() {
     return { issuer, audience, operatorsGroup };
 }
 
-const { issuer, audience, operatorsGroup } = getKeycloakConfig();
+export const { issuer, audience, operatorsGroup } = getKeycloakConfig();
 
 
 const jwksUrl = new URL(
