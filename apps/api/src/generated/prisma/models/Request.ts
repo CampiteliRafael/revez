@@ -198,8 +198,8 @@ export type RequestGroupByOutputType = {
   dueDate: Date
   status: $Enums.RequestStatus
   createdById: string
-  assigneeId: string
-  teamId: string
+  assigneeId: string | null
+  teamId: string | null
   createdAt: Date
   updatedAt: Date
   _count: RequestCountAggregateOutputType | null
@@ -234,13 +234,13 @@ export type RequestWhereInput = {
   dueDate?: Prisma.DateTimeFilter<"Request"> | Date | string
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
   createdById?: Prisma.StringFilter<"Request"> | string
-  assigneeId?: Prisma.StringFilter<"Request"> | string
-  teamId?: Prisma.StringFilter<"Request"> | string
+  assigneeId?: Prisma.StringNullableFilter<"Request"> | string | null
+  teamId?: Prisma.StringNullableFilter<"Request"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  assignee?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
+  assignee?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  team?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
   comments?: Prisma.CommentListRelationFilter
   requestEvents?: Prisma.RequestEventListRelationFilter
 }
@@ -254,8 +254,8 @@ export type RequestOrderByWithRelationInput = {
   dueDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
-  assigneeId?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  teamId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   creator?: Prisma.UserOrderByWithRelationInput
@@ -277,13 +277,13 @@ export type RequestWhereUniqueInput = Prisma.AtLeast<{
   dueDate?: Prisma.DateTimeFilter<"Request"> | Date | string
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
   createdById?: Prisma.StringFilter<"Request"> | string
-  assigneeId?: Prisma.StringFilter<"Request"> | string
-  teamId?: Prisma.StringFilter<"Request"> | string
+  assigneeId?: Prisma.StringNullableFilter<"Request"> | string | null
+  teamId?: Prisma.StringNullableFilter<"Request"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   creator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  assignee?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
+  assignee?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  team?: Prisma.XOR<Prisma.TeamNullableScalarRelationFilter, Prisma.TeamWhereInput> | null
   comments?: Prisma.CommentListRelationFilter
   requestEvents?: Prisma.RequestEventListRelationFilter
 }, "id">
@@ -297,8 +297,8 @@ export type RequestOrderByWithAggregationInput = {
   dueDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
-  assigneeId?: Prisma.SortOrder
-  teamId?: Prisma.SortOrder
+  assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  teamId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.RequestCountOrderByAggregateInput
@@ -318,8 +318,8 @@ export type RequestScalarWhereWithAggregatesInput = {
   dueDate?: Prisma.DateTimeWithAggregatesFilter<"Request"> | Date | string
   status?: Prisma.EnumRequestStatusWithAggregatesFilter<"Request"> | $Enums.RequestStatus
   createdById?: Prisma.StringWithAggregatesFilter<"Request"> | string
-  assigneeId?: Prisma.StringWithAggregatesFilter<"Request"> | string
-  teamId?: Prisma.StringWithAggregatesFilter<"Request"> | string
+  assigneeId?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
+  teamId?: Prisma.StringNullableWithAggregatesFilter<"Request"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Request"> | Date | string
 }
@@ -335,8 +335,8 @@ export type RequestCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutCreatedRequestsInput
-  assignee: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
-  team: Prisma.TeamCreateNestedOneWithoutRequestsInput
+  assignee?: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
+  team?: Prisma.TeamCreateNestedOneWithoutRequestsInput
   comments?: Prisma.CommentCreateNestedManyWithoutRequestInput
   requestEvents?: Prisma.RequestEventCreateNestedManyWithoutRequestInput
 }
@@ -350,8 +350,8 @@ export type RequestUncheckedCreateInput = {
   dueDate: Date | string
   status?: $Enums.RequestStatus
   createdById: string
-  assigneeId: string
-  teamId: string
+  assigneeId?: string | null
+  teamId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutRequestInput
@@ -369,8 +369,8 @@ export type RequestUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutCreatedRequestsNestedInput
-  assignee?: Prisma.UserUpdateOneRequiredWithoutAssignedRequestsNestedInput
-  team?: Prisma.TeamUpdateOneRequiredWithoutRequestsNestedInput
+  assignee?: Prisma.UserUpdateOneWithoutAssignedRequestsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutRequestsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutRequestNestedInput
   requestEvents?: Prisma.RequestEventUpdateManyWithoutRequestNestedInput
 }
@@ -384,8 +384,8 @@ export type RequestUncheckedUpdateInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutRequestNestedInput
@@ -401,8 +401,8 @@ export type RequestCreateManyInput = {
   dueDate: Date | string
   status?: $Enums.RequestStatus
   createdById: string
-  assigneeId: string
-  teamId: string
+  assigneeId?: string | null
+  teamId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -428,8 +428,8 @@ export type RequestUncheckedUpdateManyInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -670,8 +670,8 @@ export type RequestCreateWithoutCreatorInput = {
   status?: $Enums.RequestStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  assignee: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
-  team: Prisma.TeamCreateNestedOneWithoutRequestsInput
+  assignee?: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
+  team?: Prisma.TeamCreateNestedOneWithoutRequestsInput
   comments?: Prisma.CommentCreateNestedManyWithoutRequestInput
   requestEvents?: Prisma.RequestEventCreateNestedManyWithoutRequestInput
 }
@@ -684,8 +684,8 @@ export type RequestUncheckedCreateWithoutCreatorInput = {
   priority: $Enums.RequestPriority
   dueDate: Date | string
   status?: $Enums.RequestStatus
-  assigneeId: string
-  teamId: string
+  assigneeId?: string | null
+  teamId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutRequestInput
@@ -713,7 +713,7 @@ export type RequestCreateWithoutAssigneeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutCreatedRequestsInput
-  team: Prisma.TeamCreateNestedOneWithoutRequestsInput
+  team?: Prisma.TeamCreateNestedOneWithoutRequestsInput
   comments?: Prisma.CommentCreateNestedManyWithoutRequestInput
   requestEvents?: Prisma.RequestEventCreateNestedManyWithoutRequestInput
 }
@@ -727,7 +727,7 @@ export type RequestUncheckedCreateWithoutAssigneeInput = {
   dueDate: Date | string
   status?: $Enums.RequestStatus
   createdById: string
-  teamId: string
+  teamId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutRequestInput
@@ -772,8 +772,8 @@ export type RequestScalarWhereInput = {
   dueDate?: Prisma.DateTimeFilter<"Request"> | Date | string
   status?: Prisma.EnumRequestStatusFilter<"Request"> | $Enums.RequestStatus
   createdById?: Prisma.StringFilter<"Request"> | string
-  assigneeId?: Prisma.StringFilter<"Request"> | string
-  teamId?: Prisma.StringFilter<"Request"> | string
+  assigneeId?: Prisma.StringNullableFilter<"Request"> | string | null
+  teamId?: Prisma.StringNullableFilter<"Request"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Request"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Request"> | Date | string
 }
@@ -805,7 +805,7 @@ export type RequestCreateWithoutTeamInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutCreatedRequestsInput
-  assignee: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
+  assignee?: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
   comments?: Prisma.CommentCreateNestedManyWithoutRequestInput
   requestEvents?: Prisma.RequestEventCreateNestedManyWithoutRequestInput
 }
@@ -819,7 +819,7 @@ export type RequestUncheckedCreateWithoutTeamInput = {
   dueDate: Date | string
   status?: $Enums.RequestStatus
   createdById: string
-  assigneeId: string
+  assigneeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutRequestInput
@@ -863,8 +863,8 @@ export type RequestCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutCreatedRequestsInput
-  assignee: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
-  team: Prisma.TeamCreateNestedOneWithoutRequestsInput
+  assignee?: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
+  team?: Prisma.TeamCreateNestedOneWithoutRequestsInput
   requestEvents?: Prisma.RequestEventCreateNestedManyWithoutRequestInput
 }
 
@@ -877,8 +877,8 @@ export type RequestUncheckedCreateWithoutCommentsInput = {
   dueDate: Date | string
   status?: $Enums.RequestStatus
   createdById: string
-  assigneeId: string
-  teamId: string
+  assigneeId?: string | null
+  teamId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   requestEvents?: Prisma.RequestEventUncheckedCreateNestedManyWithoutRequestInput
@@ -911,8 +911,8 @@ export type RequestUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutCreatedRequestsNestedInput
-  assignee?: Prisma.UserUpdateOneRequiredWithoutAssignedRequestsNestedInput
-  team?: Prisma.TeamUpdateOneRequiredWithoutRequestsNestedInput
+  assignee?: Prisma.UserUpdateOneWithoutAssignedRequestsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutRequestsNestedInput
   requestEvents?: Prisma.RequestEventUpdateManyWithoutRequestNestedInput
 }
 
@@ -925,8 +925,8 @@ export type RequestUncheckedUpdateWithoutCommentsInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   requestEvents?: Prisma.RequestEventUncheckedUpdateManyWithoutRequestNestedInput
@@ -943,8 +943,8 @@ export type RequestCreateWithoutRequestEventsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   creator: Prisma.UserCreateNestedOneWithoutCreatedRequestsInput
-  assignee: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
-  team: Prisma.TeamCreateNestedOneWithoutRequestsInput
+  assignee?: Prisma.UserCreateNestedOneWithoutAssignedRequestsInput
+  team?: Prisma.TeamCreateNestedOneWithoutRequestsInput
   comments?: Prisma.CommentCreateNestedManyWithoutRequestInput
 }
 
@@ -957,8 +957,8 @@ export type RequestUncheckedCreateWithoutRequestEventsInput = {
   dueDate: Date | string
   status?: $Enums.RequestStatus
   createdById: string
-  assigneeId: string
-  teamId: string
+  assigneeId?: string | null
+  teamId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutRequestInput
@@ -991,8 +991,8 @@ export type RequestUpdateWithoutRequestEventsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutCreatedRequestsNestedInput
-  assignee?: Prisma.UserUpdateOneRequiredWithoutAssignedRequestsNestedInput
-  team?: Prisma.TeamUpdateOneRequiredWithoutRequestsNestedInput
+  assignee?: Prisma.UserUpdateOneWithoutAssignedRequestsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutRequestsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutRequestNestedInput
 }
 
@@ -1005,8 +1005,8 @@ export type RequestUncheckedUpdateWithoutRequestEventsInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutRequestNestedInput
@@ -1020,8 +1020,8 @@ export type RequestCreateManyCreatorInput = {
   priority: $Enums.RequestPriority
   dueDate: Date | string
   status?: $Enums.RequestStatus
-  assigneeId: string
-  teamId: string
+  assigneeId?: string | null
+  teamId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1035,7 +1035,7 @@ export type RequestCreateManyAssigneeInput = {
   dueDate: Date | string
   status?: $Enums.RequestStatus
   createdById: string
-  teamId: string
+  teamId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1050,8 +1050,8 @@ export type RequestUpdateWithoutCreatorInput = {
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignee?: Prisma.UserUpdateOneRequiredWithoutAssignedRequestsNestedInput
-  team?: Prisma.TeamUpdateOneRequiredWithoutRequestsNestedInput
+  assignee?: Prisma.UserUpdateOneWithoutAssignedRequestsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutRequestsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutRequestNestedInput
   requestEvents?: Prisma.RequestEventUpdateManyWithoutRequestNestedInput
 }
@@ -1064,8 +1064,8 @@ export type RequestUncheckedUpdateWithoutCreatorInput = {
   priority?: Prisma.EnumRequestPriorityFieldUpdateOperationsInput | $Enums.RequestPriority
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutRequestNestedInput
@@ -1080,8 +1080,8 @@ export type RequestUncheckedUpdateManyWithoutCreatorInput = {
   priority?: Prisma.EnumRequestPriorityFieldUpdateOperationsInput | $Enums.RequestPriority
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1097,7 +1097,7 @@ export type RequestUpdateWithoutAssigneeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutCreatedRequestsNestedInput
-  team?: Prisma.TeamUpdateOneRequiredWithoutRequestsNestedInput
+  team?: Prisma.TeamUpdateOneWithoutRequestsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutRequestNestedInput
   requestEvents?: Prisma.RequestEventUpdateManyWithoutRequestNestedInput
 }
@@ -1111,7 +1111,7 @@ export type RequestUncheckedUpdateWithoutAssigneeInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutRequestNestedInput
@@ -1127,7 +1127,7 @@ export type RequestUncheckedUpdateManyWithoutAssigneeInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1141,7 +1141,7 @@ export type RequestCreateManyTeamInput = {
   dueDate: Date | string
   status?: $Enums.RequestStatus
   createdById: string
-  assigneeId: string
+  assigneeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1157,7 +1157,7 @@ export type RequestUpdateWithoutTeamInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creator?: Prisma.UserUpdateOneRequiredWithoutCreatedRequestsNestedInput
-  assignee?: Prisma.UserUpdateOneRequiredWithoutAssignedRequestsNestedInput
+  assignee?: Prisma.UserUpdateOneWithoutAssignedRequestsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutRequestNestedInput
   requestEvents?: Prisma.RequestEventUpdateManyWithoutRequestNestedInput
 }
@@ -1171,7 +1171,7 @@ export type RequestUncheckedUpdateWithoutTeamInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutRequestNestedInput
@@ -1187,7 +1187,7 @@ export type RequestUncheckedUpdateManyWithoutTeamInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumRequestStatusFieldUpdateOperationsInput | $Enums.RequestStatus
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  assigneeId?: Prisma.StringFieldUpdateOperationsInput | string
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1246,8 +1246,8 @@ export type RequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Request$assigneeArgs<ExtArgs>
+  team?: boolean | Prisma.Request$teamArgs<ExtArgs>
   comments?: boolean | Prisma.Request$commentsArgs<ExtArgs>
   requestEvents?: boolean | Prisma.Request$requestEventsArgs<ExtArgs>
   _count?: boolean | Prisma.RequestCountOutputTypeDefaultArgs<ExtArgs>
@@ -1267,8 +1267,8 @@ export type RequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Request$assigneeArgs<ExtArgs>
+  team?: boolean | Prisma.Request$teamArgs<ExtArgs>
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1285,8 +1285,8 @@ export type RequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   createdAt?: boolean
   updatedAt?: boolean
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Request$assigneeArgs<ExtArgs>
+  team?: boolean | Prisma.Request$teamArgs<ExtArgs>
 }, ExtArgs["result"]["request"]>
 
 export type RequestSelectScalar = {
@@ -1307,29 +1307,29 @@ export type RequestSelectScalar = {
 export type RequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "category" | "priority" | "dueDate" | "status" | "createdById" | "assigneeId" | "teamId" | "createdAt" | "updatedAt", ExtArgs["result"]["request"]>
 export type RequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Request$assigneeArgs<ExtArgs>
+  team?: boolean | Prisma.Request$teamArgs<ExtArgs>
   comments?: boolean | Prisma.Request$commentsArgs<ExtArgs>
   requestEvents?: boolean | Prisma.Request$requestEventsArgs<ExtArgs>
   _count?: boolean | Prisma.RequestCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Request$assigneeArgs<ExtArgs>
+  team?: boolean | Prisma.Request$teamArgs<ExtArgs>
 }
 export type RequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  assignee?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.Request$assigneeArgs<ExtArgs>
+  team?: boolean | Prisma.Request$teamArgs<ExtArgs>
 }
 
 export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Request"
   objects: {
     creator: Prisma.$UserPayload<ExtArgs>
-    assignee: Prisma.$UserPayload<ExtArgs>
-    team: Prisma.$TeamPayload<ExtArgs>
+    assignee: Prisma.$UserPayload<ExtArgs> | null
+    team: Prisma.$TeamPayload<ExtArgs> | null
     comments: Prisma.$CommentPayload<ExtArgs>[]
     requestEvents: Prisma.$RequestEventPayload<ExtArgs>[]
   }
@@ -1342,8 +1342,8 @@ export type $RequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     dueDate: Date
     status: $Enums.RequestStatus
     createdById: string
-    assigneeId: string
-    teamId: string
+    assigneeId: string | null
+    teamId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["request"]>
@@ -1741,8 +1741,8 @@ readonly fields: RequestFieldRefs;
 export interface Prisma__RequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   creator<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  assignee<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  team<T extends Prisma.TeamDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamDefaultArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  assignee<T extends Prisma.Request$assigneeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Request$assigneeArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  team<T extends Prisma.Request$teamArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Request$teamArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.Request$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Request$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   requestEvents<T extends Prisma.Request$requestEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Request$requestEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2184,6 +2184,44 @@ export type RequestDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Requests to delete.
    */
   limit?: number
+}
+
+/**
+ * Request.assignee
+ */
+export type Request$assigneeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Request.team
+ */
+export type Request$teamArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Team
+   */
+  select?: Prisma.TeamSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Team
+   */
+  omit?: Prisma.TeamOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TeamInclude<ExtArgs> | null
+  where?: Prisma.TeamWhereInput
 }
 
 /**

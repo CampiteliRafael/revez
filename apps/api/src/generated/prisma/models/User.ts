@@ -375,10 +375,12 @@ export type UserUpdateOneRequiredWithoutCreatedRequestsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedRequestsInput, Prisma.UserUpdateWithoutCreatedRequestsInput>, Prisma.UserUncheckedUpdateWithoutCreatedRequestsInput>
 }
 
-export type UserUpdateOneRequiredWithoutAssignedRequestsNestedInput = {
+export type UserUpdateOneWithoutAssignedRequestsNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedRequestsInput, Prisma.UserUncheckedCreateWithoutAssignedRequestsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedRequestsInput
   upsert?: Prisma.UserUpsertWithoutAssignedRequestsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedRequestsInput, Prisma.UserUpdateWithoutAssignedRequestsInput>, Prisma.UserUncheckedUpdateWithoutAssignedRequestsInput>
 }

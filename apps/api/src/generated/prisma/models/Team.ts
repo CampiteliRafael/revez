@@ -290,9 +290,9 @@ export type TeamMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type TeamScalarRelationFilter = {
-  is?: Prisma.TeamWhereInput
-  isNot?: Prisma.TeamWhereInput
+export type TeamNullableScalarRelationFilter = {
+  is?: Prisma.TeamWhereInput | null
+  isNot?: Prisma.TeamWhereInput | null
 }
 
 export type TeamCreateNestedOneWithoutRequestsInput = {
@@ -301,10 +301,12 @@ export type TeamCreateNestedOneWithoutRequestsInput = {
   connect?: Prisma.TeamWhereUniqueInput
 }
 
-export type TeamUpdateOneRequiredWithoutRequestsNestedInput = {
+export type TeamUpdateOneWithoutRequestsNestedInput = {
   create?: Prisma.XOR<Prisma.TeamCreateWithoutRequestsInput, Prisma.TeamUncheckedCreateWithoutRequestsInput>
   connectOrCreate?: Prisma.TeamCreateOrConnectWithoutRequestsInput
   upsert?: Prisma.TeamUpsertWithoutRequestsInput
+  disconnect?: Prisma.TeamWhereInput | boolean
+  delete?: Prisma.TeamWhereInput | boolean
   connect?: Prisma.TeamWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutRequestsInput, Prisma.TeamUpdateWithoutRequestsInput>, Prisma.TeamUncheckedUpdateWithoutRequestsInput>
 }

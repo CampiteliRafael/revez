@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Request" ALTER COLUMN "assigneeId" DROP NOT NULL,
+ALTER COLUMN "teamId" DROP NOT NULL;
