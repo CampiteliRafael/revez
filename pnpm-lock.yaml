@@ -235,6 +235,9 @@ importers:
       '@prisma/client':
         specifier: ^7.10.1
         version: 7.10.1(prisma@7.10.1(@types/node@24.19.2)(@types/react@19.3.0)(magicast@0.5.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(typescript@5.9.3)
+      '@revez/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       express:
         specifier: ^5.3.0
         version: 5.3.0

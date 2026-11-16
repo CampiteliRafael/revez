@@ -2,9 +2,16 @@ import express, { type ErrorRequestHandler } from "express";
 import { prisma } from "./prisma";
 import { authMiddleware } from "./middleware/auth";
 import { requireOperator } from "./middleware/require-operator";
+import { requestsRepository } from "./requests/requests-repository";
+import { makeCreateRequestUseCase } from "./requests/requests-use-case";
+import { createRequestsRouter } from "./requests/requests-routes";
 
 const app = express();
 const port = process.env.PORT || 3000;
+app.use(express.json());
+
+const createRequestUseCase = makeCreateRequestUseCase(requestsRepository);
+app.use("/requests", createRequestsRouter(createRequestUseCase));
 
 app.get("/health", async (_req, res) => {
   try {

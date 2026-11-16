@@ -54,7 +54,7 @@ model Request {
   description String
   category    RequestCategory
   priority    RequestPriority
-  dueDate     DateTime        @db.Timestamptz(3)
+  dueDate     DateTime        @db.Date
   status      RequestStatus   @default(NEW)
   createdById String
   assigneeId  String?
