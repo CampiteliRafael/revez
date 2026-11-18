@@ -44,6 +44,7 @@
 | F-03 | Quero subir PostgreSQL e Redis com Docker Compose para reproduzir o ambiente local. | Compose inicia serviços com health checks e volumes; `.env.example` e instrução de inicialização estão documentados. | F-01 / S |
 | F-04 | Quero preparar CI no GitHub Actions para validar as mudanças. | Pipeline executa lint, tipos e testes; falha se qualquer etapa obrigatória falhar. | F-02 / S |
 | F-05 | Quero criar migrations e seed fictício para iniciar desenvolvimento com dados previsíveis. | Migrations aplicam em banco vazio; seed pode ser repetido sem duplicar dados. | F-03, domínio de P-02 / M |
+| F-06 | Quero observar a saúde técnica da API e do worker para detectar erros e lentidão. | Logs estruturados seguros, liveness/readiness e métricas RED da API; visualização local validada; instrumentação de filas/worker adicionada quando o worker for implementado. Stack e critérios detalhados conforme ADR-014. | F-03, API e worker / M |
 
 ### Épico 2 — API e regra central
 

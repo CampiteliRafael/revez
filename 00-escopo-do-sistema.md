@@ -45,7 +45,15 @@ Processa tarefas demoradas fora do ciclo da requisição HTTP: sugestões de res
 
 Isso constitui engenharia de IA aplicada e engenharia de dados em escopo de produto. Não inclui treinamento de modelos, data lake, Kafka, Spark ou plataforma analítica independente.
 
-### F — Repositório e ambiente local
+### F — Observabilidade
+
+**Estado:** planejada; ferramentas e critérios operacionais ainda precisam ser validados.
+
+Monitorar a saúde e o desempenho técnico da API e, quando existir, do worker: disponibilidade, latência, erros, dependências e processamento de filas. A proposta inicial é instrumentar os serviços com OpenTelemetry, produzir logs estruturados e visualizar métricas e traces em uma stack local, começando por Prometheus e Grafana. A instrumentação deve evitar tokens, conteúdo de solicitações e outros dados pessoais nos logs e traces.
+
+Observabilidade técnica não substitui eventos de domínio, auditoria ou métricas de produto. `RequestEvent` e os dados de revisão de IA continuam sendo a base para indicadores como tempo de atendimento e uso/resultado das sugestões.
+
+### G — Repositório e ambiente local
 
 **Proposta:** monorepo TypeScript com pnpm workspaces: `apps/web`, `apps/mobile`, `apps/api`, `apps/worker` e pacotes compartilhados pequenos para contrato/schemas quando fizer sentido. Não compartilhar componentes visuais entre web e mobile.
 
@@ -94,6 +102,7 @@ Não usar vários gerenciadores globais em paralelo. Estado local fica nos compo
 - métricas operacionais básicas, depois de definidas;
 - testes de regras, integração da API e fluxo web crítico;
 - contrato OpenAPI, migrations e dados fictícios de seed.
+- fundação de observabilidade técnica local, após validar a stack e os critérios de operação.
 
 ### Deixar para etapas posteriores
 
@@ -103,6 +112,7 @@ Não usar vários gerenciadores globais em paralelo. Estado local fica nos compo
 - múltiplos tenants, deploy de alta disponibilidade, Kubernetes e microserviços;
 - treino/fine-tuning de modelos e infraestrutura própria de serving;
 - plataforma de dados separada ou uso de Kafka/Spark.
+- alertas operacionais e monitoramento do frontend em produção, até haver ambiente implantado e limites de serviço definidos.
 
 ## 6. Modelo de dados inicial
 

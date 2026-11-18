@@ -10,6 +10,7 @@
 - Não expõe segredos nem envia dados desnecessários a serviços externos.
 - As interfaces essenciais foram verificadas em tamanhos de tela adequados e com acessibilidade básica.
 - Jobs não duplicam efeitos quando repetidos e falhas são observáveis.
+- Logs e traces são correlacionáveis e minimizados; métricas técnicas não usam identificadores de alta cardinalidade.
 
 ## Estratégia de testes
 
@@ -42,12 +43,23 @@
 - Usar dados fictícios no desenvolvimento público; remover ou minimizar dados pessoais em qualquer avaliação externa.
 - Embeddings, se adotados, devem ser regeneráveis a partir de conteúdo permitido e metadados de versão.
 
+## Observabilidade técnica
+
+- Começar pela API com logs estruturados, identificador de requisição, liveness/readiness e métricas RED (taxa, erros e latência).
+- Instrumentar dependências necessárias à prontidão e, quando viável, propagar traces entre API, PostgreSQL, Redis e worker.
+- Para o worker, observar duração e resultados dos jobs, retentativas e idade/profundidade das filas, sem expor conteúdo dos jobs.
+- Usar OpenTelemetry como proposta de instrumentação e validar a visualização local com Prometheus/Grafana antes de definir a operação de produção.
+- Não registrar access tokens, segredos, corpos completos de requisições, descrições de solicitações nem dados pessoais desnecessários.
+- Evitar IDs únicos como labels de métricas; manter a cardinalidade controlada.
+- Definir objetivos de serviço, retenção e alertas após obter uma linha de base; não escolher limites arbitrários antes disso.
+
 ## Checklist de operação local e CI
 
 - Docker Compose inicia PostgreSQL e Redis com health checks e volumes locais adequados.
 - Migrations e seed são repetíveis; seed contém dados sintéticos.
 - API e worker iniciam com configuração documentada e falham com mensagem clara quando dependências faltam.
 - Logs correlacionam solicitação e job com identificador, sem registrar credenciais ou conteúdo sensível desnecessário.
+- Quando a fundação de observabilidade for implementada, a stack local deve expor dashboards de métricas e permitir verificar saúde e falhas da API.
 - GitHub Actions executa lint, checagem de tipos, testes e builds relevantes.
 - `.env.example` documenta nomes de configuração sem valores secretos.
 
@@ -60,3 +72,4 @@
 5. Erros de API, banco, Redis e provedor têm comportamento previsível e logs seguros.
 6. O fluxo web essencial e os casos de uso críticos têm testes automatizados.
 7. A API rejeita requisições não autenticadas e aplica os limites de acesso de Solicitantes e Operadores, inclusive em filas, detalhes, comentários e atualizações.
+8. A fundação de observabilidade permite correlacionar erros da API com métricas e logs sem expor segredos ou conteúdo sensível.

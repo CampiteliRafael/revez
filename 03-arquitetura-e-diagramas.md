@@ -11,6 +11,7 @@
 - IA é uma dependência externa opcional para o fluxo transacional: falha do provedor não deve impedir operações básicas.
 - TanStack Query gerencia estado remoto; Zustand é reservado a estado global de interface que realmente atravesse telas; demais estados ficam locais.
 - OpenAPI é o contrato de integração; Docker Compose define dependências locais.
+- Observabilidade técnica deve correlacionar logs, métricas e traces dos serviços sem registrar credenciais ou conteúdo sensível; sua stack ainda é uma proposta.
 - Não introduzir microserviços ou plataforma de streaming no MVP.
 
 ## Contexto e componentes
@@ -41,6 +42,18 @@ flowchart LR
 | Redis/BullMQ | Estado e distribuição de jobs assíncronos | Fonte permanente dos dados do domínio |
 | Worker | Resumo/classificação/embeddings e gravação dos resultados | Decisão operacional autônoma |
 | PostgreSQL | Fonte da verdade para solicitações, histórico e resultados | Cache efêmero da fila |
+
+## Observabilidade técnica (planejada)
+
+Observabilidade responde se os componentes estão disponíveis, lentos ou falhando. Ela é distinta das métricas de produto e do histórico de domínio:
+
+- **Logs:** eventos estruturados, inicialmente em JSON, com identificador de requisição e contexto de trace quando disponível. Não incluir tokens, corpos completos de solicitações ou dados pessoais desnecessários.
+- **Métricas:** começar pela API com taxa de requisições, erros e latência (RED), além de estado das dependências. Quando o worker existir, adicionar duração, falhas, retentativas e profundidade/idade das filas.
+- **Traces:** seguir uma operação entre cliente, API, banco e, futuramente, worker/fila, usando propagação de contexto. Dados sensíveis não devem ser incluídos em atributos de spans.
+- **Saúde:** separar liveness (processo ativo) de readiness (capaz de atender, considerando dependências necessárias).
+- **Visualização:** proposta de OpenTelemetry como padrão de instrumentação, Prometheus para coleta de métricas e Grafana para dashboards locais via Docker Compose. Backend de traces, armazenamento de logs, política de retenção e alertas ficam para decisão posterior.
+
+Adotar por etapas: instrumentar a API e validar o fluxo local; incluir propagação e métricas do worker quando sua implementação começar; só então definir dashboards operacionais, alertas e monitoramento de frontend/produção. Não usar rótulos de alta cardinalidade, como IDs de usuário, solicitação ou requisição, em métricas.
 
 ## Fluxo assíncrono de sugestão de IA
 

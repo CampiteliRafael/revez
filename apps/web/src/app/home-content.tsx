@@ -5,6 +5,7 @@ import { useAuth } from '../auth/auth-provider';
 import { getCurrentUser, type CurrentUser } from "../api/me";
 import { createRequest } from "../api/requests";
 import { CreateRequestForm } from "../features/requests/components/create-request-form";
+import { Dialog } from "../features/requests/components/ui/dialog";
 import type { CreateRequestInput } from "@revez/contracts";
 
 export function HomeContent() {
@@ -12,6 +13,7 @@ export function HomeContent() {
     const [actionError, setActionError] = useState<string | null>(null);
     const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
     const [profileLoading, setProfileLoading] = useState(false);
+    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
     async function handleLoadProfile() {
         setActionError(null);
@@ -83,9 +85,20 @@ export function HomeContent() {
                 Sair
             </button>
             {actionError && <p role="alert">{actionError}</p>}
-            <section aria-labelledby="create-request-heading">
-                <h2 id="create-request-heading">Nova solicitação</h2>
-                <CreateRequestForm onSubmit={handleCreateRequest} />
+            <section aria-label="Solicitações">
+                <button
+                    type="button"
+                    onClick={() => setIsCreateDialogOpen(true)}
+                >
+                    Nova solicitação
+                </button>
+                <Dialog
+                    open={isCreateDialogOpen}
+                    onClose={() => setIsCreateDialogOpen(false)}
+                    labelledBy="create-request-heading"
+                >
+                    <CreateRequestForm onSubmit={handleCreateRequest} />
+                </Dialog>
             </section>
             <div>
                 <button

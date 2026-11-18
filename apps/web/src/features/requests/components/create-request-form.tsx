@@ -57,13 +57,13 @@ export function CreateRequestForm({ onSubmit }: CreateRequestFormProps) {
             onSubmit={handleSubmit}
             aria-describedby="create-request-form-help"
         >
-            <p className={styles.help} id="create-request-form-help">
-                Descreva o pedido. Todos os campos marcados com{" "}
-                <span aria-hidden="true">*</span> são obrigatórios.
-            </p>
-            <p className={styles.requester}>
-                O solicitante será identificado pela conta autenticada.
-            </p>
+            <header>
+                <h2 id="create-request-heading">Nova solicitação</h2>
+                <p className={styles.help} id="create-request-form-help">
+                    Descreva o pedido. Todos os campos marcados com{" "}
+                    <span aria-hidden="true">*</span> são obrigatórios.
+                </p>
+            </header>
 
             <div className={styles.field}>
                 <label htmlFor="title">

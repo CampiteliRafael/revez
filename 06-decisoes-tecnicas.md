@@ -93,6 +93,15 @@ Registre aqui decisões que afetam implementação. Quando uma decisão mudar, a
 - **Consequências:** a API continua responsável por aplicar autorização. Protocolo, claims, nome do grupo, configuração do provedor corporativo e limites técnicos da empresa devem ser definidos antes da implementação.
 - **Referência:** https://www.keycloak.org/docs/latest/server_admin/
 
+## ADR-014 — Observabilidade técnica
+
+- **Estado:** Proposta; implementação e ferramentas ainda não aprovadas.
+- **Contexto:** API, banco, Redis e o futuro worker precisam ter disponibilidade, falhas e desempenho observáveis; as métricas de produto e os eventos de domínio não cobrem saúde técnica.
+- **Decisão proposta:** instrumentar serviços com OpenTelemetry; iniciar com logs estruturados e correlacionados, liveness/readiness e métricas RED da API. Avaliar Prometheus e Grafana para visualização local via Docker Compose. Adicionar traces e métricas de fila/worker conforme o worker for implementado.
+- **Segurança:** não registrar tokens, segredos, conteúdo completo de solicitações nem dados pessoais desnecessários; evitar IDs únicos como labels de métricas.
+- **Fora desta etapa:** monitoramento de frontend em produção, alertas, backend/retention de traces e logs, SLIs/SLOs e objetivos numéricos. Defini-los após implantação e coleta de uma linha de base.
+- **Consequência:** `RequestEvent` e métricas de negócio permanecem separados da telemetria operacional.
+
 ## Decisões de produto pendentes
 
 - Delimitação entre operação interna e atendimento a clientes.
@@ -100,6 +109,7 @@ Registre aqui decisões que afetam implementação. Quando uma decisão mudar, a
 - Protocolo SSO, claims de token, nome do grupo de Operadores e configuração do provedor corporativo no Keycloak.
 - Provedor/modelo de IA, retenção e orçamento; tratamento de solicitações com conteúdo proibido.
 - Métricas, limites de qualidade e conjunto de avaliação.
+- Stack de observabilidade, retenção de telemetria, objetivos de serviço e política de alertas.
 - Se pgvector e busca semântica entram no MVP ou na fase seguinte.
 - Nome final para publicação externa.
 
