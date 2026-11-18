@@ -4,12 +4,15 @@ import type { CreateRequestInput } from "@revez/contracts";
 import type { CreateRequestResponse } from "../../../api/requests";
 import { useState, type SubmitEvent } from "react";
 import styles from "./create-request-form.module.css";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 type CreateRequestFormProps = {
     onSubmit: (input: CreateRequestInput) => Promise<CreateRequestResponse>;
+    onCancel: () => void;
 };
 
-export function CreateRequestForm({ onSubmit }: CreateRequestFormProps) {
+export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState<CreateRequestInput["category"]>("IT");
@@ -69,7 +72,7 @@ export function CreateRequestForm({ onSubmit }: CreateRequestFormProps) {
                 <label htmlFor="title">
                     Título <span aria-hidden="true">*</span>
                 </label>
-                <input
+                <Input
                     id="title"
                     name="title"
                     value={title}
@@ -139,7 +142,7 @@ export function CreateRequestForm({ onSubmit }: CreateRequestFormProps) {
                 <label htmlFor="dueDate">
                     Prazo <span aria-hidden="true">*</span>
                 </label>
-                <input
+                <Input
                     id="dueDate"
                     name="dueDate"
                     type="date"
@@ -158,9 +161,12 @@ export function CreateRequestForm({ onSubmit }: CreateRequestFormProps) {
             )}
 
             <div className={styles.actions}>
-                <button type="submit" disabled={sending}>
+                <Button type="button" onClick={onCancel}>
+                    Cancelar
+                </Button>
+                <Button type="submit" disabled={sending}>
                     {sending ? "Enviando..." : "Criar solicitação"}
-                </button>
+                </Button>
             </div>
         </form>
     )

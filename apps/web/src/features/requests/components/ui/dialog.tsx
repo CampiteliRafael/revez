@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./dialog.module.css";
+
 import { useEffect, useRef, type ReactNode } from "react";
 
 type DialogProps = {
@@ -33,6 +35,7 @@ export function Dialog({
 
     return (
         <dialog
+            className={styles.dialog}
             ref={dialogRef}
             aria-labelledby={labelledBy}
             onClose={onClose}

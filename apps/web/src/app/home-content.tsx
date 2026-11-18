@@ -97,7 +97,12 @@ export function HomeContent() {
                     onClose={() => setIsCreateDialogOpen(false)}
                     labelledBy="create-request-heading"
                 >
-                    <CreateRequestForm onSubmit={handleCreateRequest} />
+                    {isCreateDialogOpen && (
+                        <CreateRequestForm
+                            onSubmit={handleCreateRequest}
+                            onCancel={() => setIsCreateDialogOpen(false)}
+                        />
+                    )}
                 </Dialog>
             </section>
             <div>
