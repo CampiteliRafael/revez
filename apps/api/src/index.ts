@@ -1,5 +1,6 @@
 import express, { type ErrorRequestHandler } from "express";
 import { prisma } from "./prisma";
+import cors from "cors";
 import { authMiddleware } from "./middleware/auth";
 import { requireOperator } from "./middleware/require-operator";
 import { requestsRepository } from "./requests/requests-repository";
@@ -8,6 +9,13 @@ import { createRequestsRouter } from "./requests/requests-routes";
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors({
+  origin: "http://localhost:3001",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use(express.json());
 
 const createRequestUseCase = makeCreateRequestUseCase(requestsRepository);

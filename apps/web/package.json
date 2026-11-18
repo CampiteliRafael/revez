@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
+    "@revez/contracts": "workspace:*",
     "keycloak-js": "^26.2.5",
     "next": "^16.4.6",
     "react": "^19.3.1",

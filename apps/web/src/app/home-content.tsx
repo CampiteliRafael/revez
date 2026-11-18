@@ -2,10 +2,38 @@
 
 import { useState } from 'react';
 import { useAuth } from '../auth/auth-provider';
+import { getCurrentUser, type CurrentUser } from "../api/me";
+import { createRequest } from "../api/requests";
+import { CreateRequestForm } from "../features/requests/components/create-request-form";
+import type { CreateRequestInput } from "@revez/contracts";
 
 export function HomeContent() {
-    const { initialized, authenticated, error, login, logout } = useAuth();
+    const { initialized, authenticated, error, login, logout, getAccessToken } = useAuth();
     const [actionError, setActionError] = useState<string | null>(null);
+    const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+    const [profileLoading, setProfileLoading] = useState(false);
+
+    async function handleLoadProfile() {
+        setActionError(null);
+        setProfileLoading(true);
+
+        try {
+            const accessToken = await getAccessToken();
+            const user = await getCurrentUser(accessToken);
+            setCurrentUser(user);
+        } catch (err) {
+            setActionError(
+                err instanceof Error ? err.message : "Não foi possível carregar o perfil",
+            );
+        } finally {
+            setProfileLoading(false);
+        }
+    }
+
+    async function handleCreateRequest(input: CreateRequestInput) {
+        const accessToken = await getAccessToken();
+        return createRequest(input, accessToken);
+    }
 
     async function handleLogin() {
         setActionError(null);
@@ -55,6 +83,26 @@ export function HomeContent() {
                 Sair
             </button>
             {actionError && <p role="alert">{actionError}</p>}
+            <section aria-labelledby="create-request-heading">
+                <h2 id="create-request-heading">Nova solicitação</h2>
+                <CreateRequestForm onSubmit={handleCreateRequest} />
+            </section>
+            <div>
+                <button
+                    type="button"
+                    onClick={() => void handleLoadProfile()}
+                    disabled={profileLoading}
+                >
+                    {profileLoading ? "Carregando perfil..." : "Consultar perfil na API"}
+                </button>
+
+                {currentUser && (
+                    <section>
+                        <p>Usuário: {currentUser.userId}</p>
+                        <p>Grupos: {currentUser.groups.join(", ") || "Nenhum"}</p>
+                    </section>
+                )}
+            </div>
         </main>
     );
 }

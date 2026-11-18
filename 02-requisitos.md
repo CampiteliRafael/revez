@@ -10,7 +10,7 @@
 
 ## Definição inicial da solicitação (P-02)
 
-Todos os campos abaixo são obrigatórios no momento da criação:
+Os campos informados pelo Solicitante são obrigatórios no momento da criação:
 
 | Campo | Regra inicial |
 |---|---|
@@ -19,20 +19,23 @@ Todos os campos abaixo são obrigatórios no momento da criação:
 | Categoria | TI, Infraestrutura, Administrativo, Compras ou RH |
 | Prioridade | Baixa, Média ou Alta |
 | Prazo | Obrigatório |
-| Responsável | Operador responsável obrigatório |
-| Equipe | Equipe responsável obrigatória |
+
+O Solicitante é identificado pela identidade autenticada; não é informado no corpo da solicitação. Equipe e responsável não são definidos na criação: a solicitação começa sem atribuição e um Operador atribui a equipe e o responsável depois.
 
 O ciclo de vida inicial usa os estados **Nova**, **Em andamento**, **Aguardando** e **Concluída**. Uma solicitação começa como Nova e pode transitar de Nova para Em andamento; de Em andamento para Aguardando ou Concluída; e de Aguardando para Em andamento. Solicitações Concluídas não podem ser reabertas no MVP.
 
-Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, prioridade Média, prazo 10/11/2026, equipe Suporte interno, responsável Operador A e estado inicial Nova. A descrição informa que o equipamento não liga antes de uma reunião e pede verificação ou indicação de reparo/substituição.
+Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, prioridade Média e prazo 10/11/2026, com estado inicial Nova e sem equipe ou responsável atribuídos. Depois da criação, um Operador atribui a equipe Suporte interno e o responsável Operador A. A descrição informa que o equipamento não liga antes de uma reunião e pede verificação ou indicação de reparo/substituição.
 
 ## Diretrizes iniciais de IA (P-03)
 
-- A primeira função sugere um resumo e uma categoria da lista definida em P-02.
-- O conteúdo da solicitação enviado para análise limita-se ao título e à descrição. A lista fixa de categorias serve como configuração para restringir a classificação.
-- Remover contatos e credenciais reconhecíveis antes do envio. Não enviar informações financeiras, de saúde nem anexos.
-- A saída permanece como sugestão: uma pessoa deve aceitar, editar ou rejeitar; nenhum campo da solicitação é alterado automaticamente.
-- Provedor/modelo, retenção de dados pelo provedor e a resposta do sistema quando detectar conteúdo proibido continuam pendentes.
+- Antes do envio, o Solicitante pode acionar explicitamente a revisão de um rascunho. A IA aponta contexto possivelmente ausente, sugere perguntas que o próprio Solicitante pode responder e pode propor melhorias no texto. O Solicitante decide o que alterar; aceitar sugestões não é obrigatório e a análise não bloqueia o envio.
+- Após a criação, a IA pode sugerir um resumo e recomendar categoria, prioridade e equipe para apoiar a triagem do Operador. As recomendações usam o título e a descrição, além das categorias, regras de prioridade e equipes disponíveis como contexto.
+- Recomendações de categoria, prioridade e equipe são apresentadas ao Operador para revisão. A IA não altera campos nem atribui equipe ou responsável automaticamente; ações persistidas exigem confirmação humana.
+- A análise ocorre fora do caminho crítico da criação. Falha ou indisponibilidade da IA não impede criar, consultar ou atualizar solicitações.
+- O conteúdo enviado para análise limita-se ao título e à descrição, após a remoção de contatos e credenciais reconhecíveis. Não enviar informações financeiras, de saúde nem anexos.
+- Registrar eventos estruturados de geração e revisão das sugestões para avaliar uso e resultado, como aceitação/edição/rejeição e tempo até primeira atribuição e conclusão, sem armazenar conteúdo desnecessário.
+- RAG e uso de solicitações históricas como contexto ficam para uma fase posterior, condicionados a autorização, proteção de acesso e avaliação mensurável de qualidade.
+- Provedor/modelo, retenção de dados pelo provedor, tratamento de conteúdo proibido detectado e critérios mínimos de qualidade continuam pendentes.
 
 ## Escopo inicial do MVP (P-04)
 
@@ -122,10 +125,9 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 - Delimitação entre operação interna e atendimento a clientes; limite técnico da empresa.
 - Edição de solicitações por Solicitantes, exclusão, arquivamento e retenção do histórico.
 - Protocolo SSO, claims de token, nome do grupo de Operadores e configuração do provedor corporativo no Keycloak.
-- Se análises de IA serão automáticas na criação ou acionadas por pessoa.
 - Como bloquear ou tratar solicitações com conteúdo proibido e qual política de retenção o provedor terá.
-- Indicadores, período, filtros e regras de cálculo.
-- Conjunto de avaliação e limite mínimo de qualidade para cada sugestão.
+- Indicadores operacionais, período, filtros e regras de cálculo; definir também como medir a utilidade das sugestões de IA.
+- Conjunto de avaliação e limite mínimo de qualidade para cada sugestão; avaliar uso de RAG antes de incluí-lo.
 
 ## Critérios integrados de aceite do MVP
 
