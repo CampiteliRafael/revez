@@ -10,6 +10,17 @@
     background-color: var(--Surface);
 }
 
+.formHeader {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.title {
+    margin: 0;
+    font-size: var(--text-xl);
+    line-height: 1.2;
+}
+
 .control {
     width: 100%;
     min-height: 2.5rem;
@@ -31,13 +42,21 @@
     resize: vertical;
 }
 
-.help {}
-
-.requester {}
+.help {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+}
 
 .field {
     display: grid;
     gap: var(--space-2);
+}
+
+.field label {
+    color: var(--Text);
+    font-size: var(--text-sm);
+    font-weight: 600;
 }
 
 .fieldPair {
@@ -50,4 +69,31 @@
     display: flex;
     justify-content: flex-end;
     gap: var(--space-2);
+}
+
+.feedback {
+    padding: var(--space-2);
+    border: 1px solid var(--Border);
+    border-radius: var(--radius-md);
+    color: var(--Text);
+    font: inherit;
+    margin: 0;
+}
+
+.feedbackError {
+    background-color: var(--Error);
+}
+
+.feedbackSuccess {
+    background-color: var(--Mint);
+}
+
+@media (max-width: 40rem) {
+    .form {
+        padding: var(--space-4);
+    }
+
+    .fieldPair {
+        grid-template-columns: 1fr;
+    }
 }

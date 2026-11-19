@@ -1,8 +1,11 @@
 'use client';
 
 import type { CreateRequestInput } from "@revez/contracts";
-import type { CreateRequestResponse } from "../../../api/requests";
-import { useState, type SubmitEvent } from "react";
+import {
+    CreateRequestError,
+    type CreateRequestResponse,
+} from "../../../api/requests";
+import { useState, useEffect, type SubmitEvent } from "react";
 import styles from "./create-request-form.module.css";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -10,9 +13,10 @@ import { Button } from "./ui/button";
 type CreateRequestFormProps = {
     onSubmit: (input: CreateRequestInput) => Promise<CreateRequestResponse>;
     onCancel: () => void;
+    onSubmittingChange: (isSubmitting: boolean) => void
 };
 
-export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps) {
+export function CreateRequestForm({ onSubmit, onCancel, onSubmittingChange }: CreateRequestFormProps) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState<CreateRequestInput["category"]>("IT");
@@ -22,12 +26,29 @@ export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps
     const [sending, setSending] = useState(false);
     const [createdRequest, setCreatedRequest] =
         useState<CreateRequestResponse | null>(null);
+    const [showFeedback, setShowFeedback] = useState(false);
+    const [feedbackRevision, setFeedbackRevision] = useState(0);
+
+    useEffect(() => {
+        if (!showFeedback) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(
+            () => setShowFeedback(false),
+            error ? 8000 : 5000,
+        );
+
+        return () => window.clearTimeout(timeoutId);
+    }, [showFeedback, error, feedbackRevision]);
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null);
+        setShowFeedback(false);
         setCreatedRequest(null);
         setSending(true);
+        onSubmittingChange(true);
 
         try {
             const result = await onSubmit({
@@ -38,19 +59,41 @@ export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps
                 dueDate,
             });
             setCreatedRequest(result);
+            setShowFeedback(true);
+            setFeedbackRevision((revision) => revision + 1);
             setTitle("");
             setDescription("");
             setCategory("IT");
             setPriority("LOW");
             setDueDate("");
         } catch (cause: unknown) {
-            setError(
-                cause instanceof Error
-                    ? cause.message
-                    : "Não foi possível criar a solicitação.",
-            );
+            if (cause instanceof CreateRequestError) {
+                const messages = {
+                    NETWORK:
+                        "Não foi possível conectar ao serviço. Verifique sua conexão e tente novamente.",
+                    UNAUTHORIZED:
+                        "Sua sessão expirou ou você não tem permissão. Entre novamente e tente de novo.",
+                    VALIDATION:
+                        "Alguns dados não foram aceitos. Revise os campos e tente novamente.",
+                    SERVER:
+                        "O serviço está temporariamente indisponível. Tente novamente em instantes.",
+                    UNEXPECTED:
+                        "Não foi possível criar a solicitação. Tente novamente.",
+                } satisfies Record<CreateRequestError["code"], string>;
+
+                setError(messages[cause.code]);
+            } else if (cause instanceof TypeError) {
+                setError(
+                    "Não foi possível conectar ao serviço. Verifique sua conexão e tente novamente.",
+                );
+            } else {
+                setError("Não foi possível criar a solicitação. Tente novamente.");
+            }
+            setShowFeedback(true);
+            setFeedbackRevision((revision) => revision + 1);
         } finally {
             setSending(false);
+            onSubmittingChange(false);
         }
     }
 
@@ -60,8 +103,8 @@ export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps
             onSubmit={handleSubmit}
             aria-describedby="create-request-form-help"
         >
-            <header>
-                <h2 id="create-request-heading">Nova solicitação</h2>
+            <header className={styles.formHeader}>
+                <h2 className={styles.title} id="create-request-heading">Nova solicitação</h2>
                 <p className={styles.help} id="create-request-form-help">
                     Descreva o pedido. Todos os campos marcados com{" "}
                     <span aria-hidden="true">*</span> são obrigatórios.
@@ -155,20 +198,33 @@ export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps
                 />
             </div>
 
-            {error && <p role="alert">{error}</p>}
+            {showFeedback && error && (
+                <p className={`${styles.feedback} ${styles.feedbackError}`} role="alert">
+                    {error}
+                </p>
+            )}
 
-            {createdRequest && (
-                <p role="status">
-                    Solicitação criada: {createdRequest.id}
+            {showFeedback && createdRequest && (
+                <p className={`${styles.feedback} ${styles.feedbackSuccess}`} role="status">
+                    Solicitação criada com sucesso
                 </p>
             )}
 
             <div className={styles.actions}>
-                <Button type="button" variant="secondary" onClick={onCancel}>
-                    Cancelar
+                <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={onCancel}
+                    disabled={sending}
+                >
+                    {createdRequest ? "Fechar" : "Cancelar"}
                 </Button>
 
-                <Button type="submit" variant="primary" disabled={sending}>
+                <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={sending}
+                >
                     {sending ? "Enviando..." : "Criar solicitação"}
                 </Button>
             </div>

@@ -5,6 +5,20 @@ export type CreateRequestResponse = {
     status: "NEW";
 };
 
+export type CreateRequestErrorCode =
+    | "NETWORK"
+    | "UNAUTHORIZED"
+    | "VALIDATION"
+    | "SERVER"
+    | "UNEXPECTED";
+
+export class CreateRequestError extends Error {
+    constructor(readonly code: CreateRequestErrorCode) {
+        super(code);
+        this.name = "CreateRequestError";
+    }
+}
+
 export async function createRequest(
     input: CreateRequestInput,
     accessToken: string,
@@ -25,10 +39,27 @@ export async function createRequest(
     });
 
     if (!response.ok) {
-        throw new Error(`Falha ao criar solicitação (HTTP ${response.status})`);
+        if (response.status === 400 || response.status === 422) {
+            throw new CreateRequestError("VALIDATION");
+        }
+
+        if (response.status === 401 || response.status === 403) {
+            throw new CreateRequestError("UNAUTHORIZED");
+        }
+
+        if (response.status >= 500) {
+            throw new CreateRequestError("SERVER");
+        }
+
+        throw new CreateRequestError("UNEXPECTED");
     }
 
-    const data: unknown = await response.json();
+    let data: unknown;
+    try {
+        data = await response.json();
+    } catch {
+        throw new CreateRequestError("UNEXPECTED");
+    }
 
     if (
         typeof data !== "object" ||
@@ -38,7 +69,7 @@ export async function createRequest(
         !("status" in data) ||
         data.status !== "NEW"
     ) {
-        throw new Error("Resposta inesperada da API");
+        throw new CreateRequestError("UNEXPECTED");
     }
 
     return { id: data.id, status: data.status };

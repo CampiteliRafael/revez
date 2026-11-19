@@ -9,6 +9,7 @@ type DialogProps = {
     onClose: () => void;
     labelledBy: string;
     children: ReactNode;
+    preventClose: boolean;
 };
 
 export function Dialog({
@@ -16,6 +17,7 @@ export function Dialog({
     onClose,
     labelledBy,
     children,
+    preventClose,
 }: DialogProps) {
     const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -39,6 +41,11 @@ export function Dialog({
             ref={dialogRef}
             aria-labelledby={labelledBy}
             onClose={onClose}
+            onCancel={(event) => {
+                if(preventClose) {
+                    event.preventDefault();
+                }
+            }}
         >
             {children}
         </dialog>

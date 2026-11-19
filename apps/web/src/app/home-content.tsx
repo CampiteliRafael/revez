@@ -14,6 +14,7 @@ export function HomeContent() {
     const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
     const [profileLoading, setProfileLoading] = useState(false);
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
 
     async function handleLoadProfile() {
         setActionError(null);
@@ -96,11 +97,13 @@ export function HomeContent() {
                     open={isCreateDialogOpen}
                     onClose={() => setIsCreateDialogOpen(false)}
                     labelledBy="create-request-heading"
+                    preventClose={isSubmittingRequest}
                 >
                     {isCreateDialogOpen && (
                         <CreateRequestForm
                             onSubmit={handleCreateRequest}
                             onCancel={() => setIsCreateDialogOpen(false)}
+                            onSubmittingChange={setIsSubmittingRequest}
                         />
                     )}
                 </Dialog>
