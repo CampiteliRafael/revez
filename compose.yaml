@@ -42,7 +42,13 @@ services:
     volumes:
       - keycloak_data:/opt/keycloak/data
 
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama_data:/root/.ollama
+
 volumes:
   postgres_data:
   redis_data:
   keycloak_data:
+  ollama_data:
