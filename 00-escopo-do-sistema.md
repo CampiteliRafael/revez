@@ -32,20 +32,26 @@ Fonte das regras de negócio e dos dados. Responsável por autenticação/autori
 
 **Stack:** Node.js, TypeScript, BullMQ e Redis.
 
-Processa tarefas demoradas fora do ciclo da requisição HTTP: sugestões de resumo e categoria de solicitações e, em fases posteriores, recomendações e geração/atualização de embeddings quando a busca semântica entrar no escopo. Deve suportar tentativas controladas, estados de processamento, falhas observáveis e proteção contra resultados duplicados. A IA não altera automaticamente campos da solicitação.
+Processa tarefas demoradas fora do ciclo da requisição HTTP, incluindo a triagem assistida após a criação: resumo e recomendações de categoria, prioridade e equipe para revisão do Operador. Deve suportar tentativas controladas, estados de processamento, falhas observáveis e proteção contra resultados duplicados. A IA não altera automaticamente campos da solicitação.
 
-### E — Dados e recursos de IA
+### E — Execução local de LLM
+
+**Provedor local preferido:** Ollama em container Docker; modelo específico ainda a escolher.
+
+O Ollama atende a revisão opcional de rascunho solicitada pelo Solicitante antes do envio e, posteriormente, às tarefas de triagem do Worker. A API integra-se ao serviço por uma interface/adaptador, sem acoplar contratos ou componentes Web ao provedor. A inferência local não tem cobrança por chamada, mas exige recursos de CPU/RAM ou GPU, armazenamento persistente para os modelos e consumo de energia; a licença do modelo escolhido precisa ser conferida. Não publicar a porta do serviço Ollama na rede sem autenticação. Um provedor hospedado pode ser avaliado depois, considerando cotas, custo e política de dados.
+
+### F — Dados e recursos de IA
 
 - PostgreSQL é a fonte de verdade dos dados transacionais.
 - `RequestEvent` registra mudanças relevantes do fluxo para auditoria e métricas.
 - Indicadores derivados respondem perguntas de operação, como volume por categoria e tempo de atendimento, após definição das regras de cálculo.
 - pgvector é proposto para armazenar embeddings no PostgreSQL e buscar solicitações semelhantes, evitando um banco vetorial separado no início.
-- Resultados de IA devem guardar referência ao pedido, tipo de sugestão, versão/configuração usada, resultado, estado de revisão e feedback humano, evitando armazenar conteúdo desnecessário.
+- Resultados de IA devem guardar referência ao pedido quando aplicável, tipo de análise, versão/configuração usada, resultado, estado de revisão e feedback humano, evitando armazenar conteúdo desnecessário. A revisão do rascunho anterior ao envio não deve criar uma solicitação nem persistir seu texto só para registrar a análise.
 - Um conjunto pequeno de exemplos fictícios ou anonimizados permitirá avaliar classificação e resumo antes de mudanças de prompt/modelo.
 
 Isso constitui engenharia de IA aplicada e engenharia de dados em escopo de produto. Não inclui treinamento de modelos, data lake, Kafka, Spark ou plataforma analítica independente.
 
-### F — Observabilidade
+### G — Observabilidade
 
 **Estado:** planejada; ferramentas e critérios operacionais ainda precisam ser validados.
 
@@ -53,11 +59,11 @@ Monitorar a saúde e o desempenho técnico da API e, quando existir, do worker: 
 
 Observabilidade técnica não substitui eventos de domínio, auditoria ou métricas de produto. `RequestEvent` e os dados de revisão de IA continuam sendo a base para indicadores como tempo de atendimento e uso/resultado das sugestões.
 
-### G — Repositório e ambiente local
+### H — Repositório e ambiente local
 
 **Proposta:** monorepo TypeScript com pnpm workspaces: `apps/web`, `apps/mobile`, `apps/api`, `apps/worker` e pacotes compartilhados pequenos para contrato/schemas quando fizer sentido. Não compartilhar componentes visuais entre web e mobile.
 
-Docker e Docker Compose devem oferecer um ambiente reproduzível para API, worker, PostgreSQL e Redis. Web e mobile também podem rodar localmente fora de containers durante o desenvolvimento. Não adicionar Turborepo até haver uma necessidade observável de cache/orquestração.
+Docker e Docker Compose devem oferecer um ambiente reproduzível para Web, API, Ollama, PostgreSQL, Redis e Keycloak; o Worker será incluído quando for implementado. Mobile poderá rodar fora dos containers para facilitar o uso de emuladores. O navegador deve acessar a API por um endereço publicado no host; nomes DNS internos do Compose servem somente à comunicação container-a-container. Não adicionar Turborepo até haver uma necessidade observável de cache/orquestração.
 
 ## 3. Stack e responsabilidades
 
@@ -72,7 +78,7 @@ Docker e Docker Compose devem oferecer um ambiente reproduzível para API, worke
 | Persistência | PostgreSQL + Prisma | Dados transacionais, migrations e consultas |
 | Busca vetorial | pgvector, após validação do caso de uso | Similaridade semântica de solicitações |
 | Filas | Redis + BullMQ | Enfileirar e executar trabalhos assíncronos |
-| Ambiente local | Docker + Docker Compose | Serviços de infraestrutura reproduzíveis |
+| Ambiente local | Docker + Docker Compose | Aplicações e serviços locais reproduzíveis |
 | Testes | Vitest; React Native Testing Library/Jest Expo; Playwright | Testes por camada e fluxos web essenciais |
 | CI | GitHub Actions | Lint, tipos, testes e build em mudanças |
 
@@ -95,9 +101,10 @@ Não usar vários gerenciadores globais em paralelo. Estado local fica nos compo
 ### Incluir
 
 - web, mobile, API e worker iniciados do zero;
-- PostgreSQL e Redis em ambiente local via Compose;
+- Web, API, Ollama, PostgreSQL, Redis e Keycloak executáveis em containers Compose; Worker entra no Compose quando implementado;
 - fila para pelo menos um processamento assíncrono de IA;
-- sugestão de resumo e categoria, a partir de título e descrição, com revisão humana;
+- revisão opcional de rascunho por IA antes do envio, com perguntas de esclarecimento e sugestões não vinculantes;
+- triagem assistida após a criação, com revisão humana de resumo e recomendações de categoria, prioridade e equipe;
 - histórico de mudanças e feedback sobre sugestões;
 - métricas operacionais básicas, depois de definidas;
 - testes de regras, integração da API e fluxo web crítico;
@@ -107,7 +114,8 @@ Não usar vários gerenciadores globais em paralelo. Estado local fica nos compo
 ### Deixar para etapas posteriores
 
 - busca semântica com embeddings/pgvector até haver dados e critério de avaliação;
-- recomendação de equipe, automações e relatórios avançados;
+- RAG e uso de solicitações históricas como contexto até haver controles e avaliação;
+- automações e relatórios avançados;
 - funcionamento offline completo, push e anexos;
 - múltiplos tenants, deploy de alta disponibilidade, Kubernetes e microserviços;
 - treino/fine-tuning de modelos e infraestrutura própria de serving;
@@ -125,7 +133,7 @@ Entidades candidatas: `User`, `Team`, `Request`, `Comment`, `RequestEvent`, `AiS
 - Falha ou indisponibilidade do provedor de IA não impede criar, consultar ou atualizar solicitações.
 - Uma sugestão gerada é identificável, revisável e não altera sozinha campos operacionais.
 - Jobs têm estados rastreáveis e retentativa limitada, sem duplicar efeitos.
-- O ambiente local documentado sobe API, worker, PostgreSQL e Redis com Compose.
+- O ambiente local planejado sobe Web, API, PostgreSQL, Redis, Keycloak e Ollama com Compose; o Worker será incluído quando implementado.
 - OpenAPI descreve os endpoints efetivamente implementados.
 - As métricas e avaliações usam dados fictícios ou tratados adequadamente.
 
@@ -134,7 +142,7 @@ Entidades candidatas: `User`, `Team`, `Request`, `Comment`, `RequestEvent`, `AiS
 1. A operação será interna, de atendimento ao cliente ou ambas, e qual será o limite técnico da empresa?
 2. Qual protocolo/claims de SSO, provedor corporativo e grupo de Operadores serão configurados no Keycloak?
 3. Solicitantes poderão editar solicitações? Como exclusão, arquivamento e retenção funcionarão?
-4. Qual provedor/modelo de IA será usado e quais dados poderão ser enviados?
+4. Qual modelo Ollama atende qualidade e hardware disponíveis, e quais dados podem ser enviados à inferência?
 5. Quais métricas adicionais serão exibidas e como serão calculadas?
 6. Qual critério define qualidade aceitável de resumo/classificação?
 7. Qual será o nome final antes de publicação externa?

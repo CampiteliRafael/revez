@@ -8,8 +8,8 @@
 1. Manter somente uma história principal em andamento. Limitar tarefas paralelas a documentação, design ou pesquisa curta.
 2. Entregar cada etapa executável e demonstrável antes de ampliar escopo.
 3. Construir primeiro um fluxo ponta a ponta na web, depois adaptar os fluxos essenciais para mobile.
-4. Usar Docker Compose desde a fundação para PostgreSQL e Redis, sem exigir que web/mobile rodem dentro dos containers.
-5. Colocar a IA atrás de uma interface e numa fila; deixar a operação básica útil antes de ligar um provedor externo.
+4. Usar Docker Compose para Web, API e serviços locais; Mobile pode rodar no host/emulador.
+5. Colocar a IA atrás de um adaptador: Ollama local para inferência; revisão de rascunho sob demanda pela API e triagem pós-criação na fila.
 6. Não introduzir papéis, estados, métricas ou automações que ainda não tenham regra de produto aprovada.
 7. Rever escopo ao fim de cada marco. Se uma história exceder alguns dias de trabalho individual, dividi-la.
 
@@ -18,11 +18,11 @@
 | Marco | Resultado verificável | Pronto quando |
 |---|---|---|
 | M0 — Produto e design | Fluxos, regras mínimas e layout web/mobile aprovados | Campos, status, papéis e jornadas do MVP definidos |
-| M1 — Fundação executável | Monorepo, API, PostgreSQL, Redis e Compose | Todos iniciam localmente; lint/tipos/CI passam |
-| M2 — Fluxo web sem IA | Criar, listar, abrir e atualizar solicitações | Persistência, validação, histórico e testes de API/web funcionam |
-| M3 — Mobile essencial | Consultar, criar e acompanhar no app | Mobile usa a mesma API e cobre estados de erro/carregamento |
-| M4 — IA em fila | Resumo/categoria sugeridos e revisados por pessoa | Worker processa, falhas são recuperáveis e feedback fica registrado |
-| M5 — Dados e acabamento | Métricas básicas, segurança, documentação e demo | Métricas têm definição; fluxo integrado demonstrável |
+| M1 — Fundação executável | Monorepo e ambiente Compose com Web, API, PostgreSQL, Redis, Keycloak e Ollama | Serviços previstos iniciam localmente; lint/tipos/CI passam; Mobile tem instruções para host/emulador |
+| M2 — Criação de solicitação | Formulário web acessível e criação persistida pela API | Validação, autorização, histórico e testes de API/web funcionam sem depender da IA |
+| M3 — Revisão de rascunho por IA | Solicitante pede análise opcional via API e decide se usa sugestões | Ollama local retorna resposta estruturada; falhas não bloqueiam envio; dados do rascunho não são persistidos pela revisão |
+| M4 — Ciclo principal web/mobile | Consultar fila, abrir detalhes, comentar e atualizar solicitações | Ambos os clientes usam a API e comunicam estados de erro/carregamento |
+| M5 — Triagem assistida e dados | Worker oferece sugestões pós-criação; eventos permitem avaliar resultados | Jobs recuperáveis e idempotentes; Operador revisa; métricas têm definição |
 
 ## Backlog priorizado
 
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | P-01 | Como responsável pelo produto, quero definir quem usa o Revez para que permissões e telas correspondam a um contexto real. | Público principal: equipes de operação de empresas. Keycloak provê SSO e gerencia usuários; grupo identifica Operadores e os demais são Solicitantes. Ambos consultam solicitações da empresa; Solicitantes criam e comentam as próprias; Operadores comentam, atribuem e atualizam todas. | Nenhuma / S — regras iniciais definidas; detalhes de integração e limite técnico da empresa pendentes |
 | P-02 | Quero definir campos, status, prioridades e transições para que solicitações tenham ciclo de vida explícito. | Cinco campos obrigatórios na criação; Solicitante derivado da identidade autenticada; equipe e responsável atribuídos por Operador depois da criação; categorias TI, Infraestrutura, Administrativo, Compras e RH; prioridades Baixa, Média e Alta; estados e transições iniciais registrados em `02-requisitos.md`, com exemplo fictício. | P-01 / S — definição inicial concluída |
-| P-03 | Quero definir a primeira função de IA e dados enviados para que a automação seja útil e segura. | Revisão opcional do rascunho pelo Solicitante com perguntas de esclarecimento e sugestões de texto; após criação, sugestões de resumo e recomendações de categoria, prioridade e equipe para revisão do Operador; nenhuma ação automática; eventos de revisão mensuráveis; contatos/credenciais reconhecíveis removidos e dados financeiros, de saúde e anexos excluídos. | P-01, P-02 / S — escopo funcional definido; provedor, retenção, tratamento de conteúdo proibido detectado e critérios de qualidade pendentes |
+| P-03 | Quero definir a primeira função de IA e dados enviados para que a automação seja útil e segura. | Revisão opcional do rascunho pelo Solicitante com perguntas de esclarecimento e sugestões de texto; após criação, sugestões de resumo e recomendações de categoria, prioridade e equipe para revisão do Operador; nenhuma ação automática; eventos de revisão mensuráveis; contatos/credenciais reconhecíveis removidos e dados financeiros, de saúde e anexos excluídos. | P-01, P-02 / S — escopo funcional definido; Ollama selecionado, modelo, política para provedores hospedados, tratamento de conteúdo proibido detectado e critérios de qualidade pendentes |
 | P-04 | Quero escolher critérios do MVP e métrica de sucesso para limitar o trabalho. | Ciclo completo de solicitações e revisão de IA em Web e Mobile, autenticados via Keycloak; métrica definida como mediana de horas corridas entre criação e conclusão, com meta após linha de base do piloto. | P-01 a P-03 / S — escopo inicial definido |
 
 ### Épico 1 — Fundação de engenharia
@@ -41,7 +41,7 @@
 |---|---|---|---|
 | F-01 | Como desenvolvedor, quero criar monorepo com pnpm workspaces para manter apps e contratos versionados juntos. | `apps/web`, `apps/mobile`, `apps/api`, `apps/worker` e `packages` têm limites claros; scripts básicos documentados. | P-04 / M |
 | F-02 | Quero configurar TypeScript, lint, format e checagem de tipos para detectar problemas cedo. | Um comando local executa verificações de cada app; configurações compartilhadas são pequenas. | F-01 / S |
-| F-03 | Quero subir PostgreSQL e Redis com Docker Compose para reproduzir o ambiente local. | Compose inicia serviços com health checks e volumes; `.env.example` e instrução de inicialização estão documentados. | F-01 / S |
+| F-03 | Quero executar o Web, a API e suas dependências locais em Docker Compose. | Compose inicia Web, API, PostgreSQL, Redis, Keycloak e Ollama com health checks/volumes apropriados; modelos do Ollama persistem; URLs do navegador e da rede interna são diferenciadas; `.env.example` e instruções estão documentados. | F-01 / M |
 | F-04 | Quero preparar CI no GitHub Actions para validar as mudanças. | Pipeline executa lint, tipos e testes; falha se qualquer etapa obrigatória falhar. | F-02 / S |
 | F-05 | Quero criar migrations e seed fictício para iniciar desenvolvimento com dados previsíveis. | Migrations aplicam em banco vazio; seed pode ser repetido sem duplicar dados. | F-03, domínio de P-02 / M |
 | F-06 | Quero observar a saúde técnica da API e do worker para detectar erros e lentidão. | Logs estruturados seguros, liveness/readiness e métricas RED da API; visualização local validada; instrumentação de filas/worker adicionada quando o worker for implementado. Stack e critérios detalhados conforme ADR-014. | F-03, API e worker / M |

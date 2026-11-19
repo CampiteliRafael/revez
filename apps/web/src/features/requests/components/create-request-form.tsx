@@ -93,6 +93,7 @@ export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Inclua contexto, resultado esperado e prazos relevantes."
                     required
+                    className={`${styles.control} ${styles.textarea}`}
                 />
             </div>
 
@@ -108,6 +109,7 @@ export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps
                         onChange={(e) =>
                             setCategory(e.target.value as CreateRequestInput["category"])
                         }
+                        className={styles.control}
                         required
                     >
                         <option value="IT">Tecnologia</option>
@@ -129,6 +131,7 @@ export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps
                         onChange={(event) =>
                             setPriority(event.target.value as CreateRequestInput["priority"])
                         }
+                        className={styles.control}
                         required
                     >
                         <option value="LOW">Baixa</option>
@@ -161,10 +164,11 @@ export function CreateRequestForm({ onSubmit, onCancel }: CreateRequestFormProps
             )}
 
             <div className={styles.actions}>
-                <Button type="button" onClick={onCancel}>
+                <Button type="button" variant="secondary" onClick={onCancel}>
                     Cancelar
                 </Button>
-                <Button type="submit" disabled={sending}>
+
+                <Button type="submit" variant="primary" disabled={sending}>
                     {sending ? "Enviando..." : "Criar solicitação"}
                 </Button>
             </div>

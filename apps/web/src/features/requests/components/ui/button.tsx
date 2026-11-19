@@ -1,10 +1,22 @@
 import type { ComponentProps } from "react";
 import styles from "./button.module.css";
 
-type ButtonProps = ComponentProps<"button">;
+type ButtonVariant = "primary" | "secondary";
 
-export function Button({ className, ...props }: ButtonProps) {
-    const classes = [styles.button, className].filter(Boolean).join(" ");
+type ButtonProps = ComponentProps<"button"> & {
+    variant?: ButtonVariant;
+};
+
+export function Button({
+    className,
+    variant = "primary",
+    ...props
+}: ButtonProps) {
+    const classes = [
+        styles.button,
+        styles[variant],
+        className,
+    ].filter(Boolean).join(" ");
 
     return <button {...props} className={classes} />;
 }

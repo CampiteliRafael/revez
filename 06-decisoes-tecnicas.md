@@ -61,8 +61,10 @@ Registre aqui decisões que afetam implementação. Quando uma decisão mudar, a
 
 ## ADR-009 — IA aplicada
 
-- **Estado:** Escopo inicial confirmado; provedor/modelo pendentes.
-- **Decisão:** sugerir resumo e categoria usando apenas título e descrição, com remoção de contatos e credenciais reconhecíveis. Não enviar informações financeiras, de saúde ou anexos. Toda saída exige revisão humana e não altera automaticamente campos da solicitação.
+- **Estado:** Escopo funcional confirmado; provedor local selecionado; modelo pendente.
+- **Decisão:** oferecer revisão opcional de rascunho antes do envio, sugerindo perguntas de esclarecimento e melhorias não vinculantes; após criação, oferecer resumo e recomendações de categoria, prioridade e equipe para revisão do Operador. Ollama em container Docker é o provedor local preferido. A camada de integração deve permitir substituir o provedor sem alterar o contrato do formulário ou da API.
+- **Dados:** usar título e descrição, com remoção de contatos/credenciais reconhecíveis; não enviar informações financeiras, de saúde ou anexos. A revisão prévia não persiste o rascunho. Provedores hospedados exigem avaliação de custo, cotas e política de dados.
+- **Controle:** toda saída é validada e revisada por pessoa; nada é aplicado automaticamente. Falha de IA não bloqueia a operação básica.
 - **Motivo:** aplicar IA a uma necessidade do fluxo, mantendo controle e rastreabilidade.
 - **Consequências:** camada de provedor pequena, saída validada, registro de versão/estado/feedback e tratamento de indisponibilidade.
 
@@ -74,10 +76,12 @@ Registre aqui decisões que afetam implementação. Quando uma decisão mudar, a
 
 ## ADR-011 — Ambiente local e containers
 
-- **Estado:** Confirmada.
-- **Decisão:** Docker e Docker Compose para ambiente reproduzível, incluindo PostgreSQL e Redis e, quando conveniente, API/worker.
+- **Estado:** Confirmada; composição completa ainda não implementada.
+- **Decisão:** usar Docker Compose para executar Web, API, PostgreSQL, Redis, Keycloak e Ollama no ambiente local. O Worker será incluído quando implementado; Mobile pode continuar fora dos containers para facilitar emuladores.
+- **Rede:** navegador acessa a API por endereço publicado no host ou proxy Web; serviços containerizados usam DNS interno do Compose entre si. Ollama não deve ficar exposto publicamente sem autenticação.
+- **Persistência e recursos:** manter modelos Ollama em volume; selecionar modelo considerando licença, RAM/CPU/GPU, armazenamento e tempo de resposta.
 - **Motivo:** simplificar instalação e integração local dos serviços.
-- **Referência:** https://docs.docker.com/compose/
+- **Referências:** https://docs.docker.com/compose/ e https://docs.ollama.com/docker
 
 ## ADR-012 — Testes e CI
 
@@ -107,7 +111,8 @@ Registre aqui decisões que afetam implementação. Quando uma decisão mudar, a
 - Delimitação entre operação interna e atendimento a clientes.
 - Limite técnico da empresa, edição de solicitações por Solicitantes e exclusão.
 - Protocolo SSO, claims de token, nome do grupo de Operadores e configuração do provedor corporativo no Keycloak.
-- Provedor/modelo de IA, retenção e orçamento; tratamento de solicitações com conteúdo proibido.
+- Modelo Ollama, requisitos de recursos/licença e tratamento de solicitações com conteúdo proibido.
+- Política para um eventual provedor hospedado, incluindo cotas, custo e tratamento de dados.
 - Métricas, limites de qualidade e conjunto de avaliação.
 - Stack de observabilidade, retenção de telemetria, objetivos de serviço e política de alertas.
 - Se pgvector e busca semântica entram no MVP ou na fase seguinte.

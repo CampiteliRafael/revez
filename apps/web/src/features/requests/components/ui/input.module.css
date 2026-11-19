@@ -1,1 +1,15 @@
-.input {}
+.input {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--Border);
+    border-radius: var(--radius-md);
+    background-color: var(--Surface);
+    color: var(--Text);
+    font: inherit;
+}
+
+.input:focus-visible {
+    outline: 3px solid var(--Forest);
+    outline-offset: 2px;
+}

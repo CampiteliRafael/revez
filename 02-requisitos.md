@@ -35,7 +35,7 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 - O conteúdo enviado para análise limita-se ao título e à descrição, após a remoção de contatos e credenciais reconhecíveis. Não enviar informações financeiras, de saúde nem anexos.
 - Registrar eventos estruturados de geração e revisão das sugestões para avaliar uso e resultado, como aceitação/edição/rejeição e tempo até primeira atribuição e conclusão, sem armazenar conteúdo desnecessário.
 - RAG e uso de solicitações históricas como contexto ficam para uma fase posterior, condicionados a autorização, proteção de acesso e avaliação mensurável de qualidade.
-- Provedor/modelo, retenção de dados pelo provedor, tratamento de conteúdo proibido detectado e critérios mínimos de qualidade continuam pendentes.
+- Ollama local foi escolhido como provedor preferido para desenvolvimento e demonstração; modelo, requisitos mínimos de recursos, tratamento de conteúdo proibido detectado e critérios mínimos de qualidade continuam pendentes. Provedores hospedados dependem de avaliação separada de cotas, custo e política de dados.
 
 ## Escopo inicial do MVP (P-04)
 
@@ -92,7 +92,7 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 | ID | Requisito | Critério de aceite | Estado |
 |---|---|---|---|
 | WRK-01 | Processar jobs assíncronos | Job tem estado observável e tentativas limitadas; API segue disponível | Proposto |
-| WRK-02 | Gerar resumo/classificação | Resultado segue schema validado e fica associado à solicitação | Provedor/modelo pendentes |
+| WRK-02 | Gerar resumo/classificação | Resultado segue schema validado e fica associado à solicitação | Ollama local selecionado; modelo pendente |
 | WRK-03 | Tratar falha de IA | Erro não altera nem apaga a solicitação; falha pode ser consultada e reprocessada | Proposto |
 | WRK-04 | Evitar efeitos duplicados | Reexecução do mesmo job não duplica sugestões/eventos nem muda decisão humana | Proposto |
 | WRK-05 | Registrar feedback de revisão | Aceite, edição ou rejeição fica ligado à versão da sugestão | Proposto |
@@ -135,6 +135,6 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 2. Confirmar persistência e evento de histórico após atualização.
 3. Processar uma análise de IA em fila e exibir a sugestão para revisão humana.
 4. Demonstrar que falha de IA ou fila não impede os fluxos básicos de solicitação.
-5. Demonstrar execução local de API, worker, PostgreSQL e Redis com Compose.
+5. Demonstrar o ambiente local planejado com Web, API, PostgreSQL, Redis, Keycloak e Ollama em Compose; incluir Worker no Compose quando implementado.
 6. Validar erros, vazios, carregamento e processamento pendente nos clientes.
 7. Manter OpenAPI alinhado à implementação e cobrir fluxos críticos por testes.
