@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '../auth/auth-provider';
+import { useAuth } from '../../auth/auth-provider';
 
 export function HomeContent() {
-    const { initialized, error, login, logout } = useAuth();
+    const { initialized, error, login } = useAuth();
     const [actionError, setActionError] = useState<string | null>(null);
 
     async function handleLogin() {

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "../styles/tokens.css";
-import { AuthProvider } from "../auth/auth-provider";
 
 export const metadata: Metadata = {
   title: "Revez",
@@ -16,9 +15,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <AuthProvider>
           {children}
-        </AuthProvider>
       </body>
     </html>
   );
