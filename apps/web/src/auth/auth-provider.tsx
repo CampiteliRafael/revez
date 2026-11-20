@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         authenticated,
         error,
         login: () => keycloak.login({
-            redirectUri: window.location.origin
+            redirectUri: `${window.location.origin}/app/solicitacoes`
         }),
         logout: () => keycloak.logout({
             redirectUri: window.location.origin

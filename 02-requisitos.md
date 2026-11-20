@@ -28,7 +28,9 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 
 ## Diretrizes iniciais de IA (P-03)
 
-- Antes do envio, o Solicitante pode acionar explicitamente a revisão de um rascunho. A IA aponta contexto possivelmente ausente, sugere perguntas que o próprio Solicitante pode responder e pode propor melhorias no texto. O Solicitante decide o que alterar; aceitar sugestões não é obrigatório e a análise não bloqueia o envio.
+- Antes do envio, o Solicitante pode acionar explicitamente a revisão de um rascunho pelo botão **Revisar com IA**. Durante a análise, a interface comunica o carregamento e impede uma segunda solicitação de revisão. O resultado aparece em um painel do formulário, separado em contexto possivelmente ausente, perguntas para consideração e propostas de melhoria do texto.
+- Cada proposta de texto pode ser aplicada explicitamente ao campo correspondente; apontamentos e perguntas não alteram o rascunho. Não há ação de aceitar tudo: o Solicitante decide o que alterar, pode ignorar o painel e enviar normalmente. A revisão não envia nem persiste a solicitação.
+- Falha ou indisponibilidade da revisão apresenta aviso recuperável, preserva o rascunho e não bloqueia o envio.
 - Após a criação, a IA pode sugerir um resumo e recomendar categoria, prioridade e equipe para apoiar a triagem do Operador. As recomendações usam o título e a descrição, além das categorias, regras de prioridade e equipes disponíveis como contexto.
 - Recomendações de categoria, prioridade e equipe são apresentadas ao Operador para revisão. A IA não altera campos nem atribui equipe ou responsável automaticamente; ações persistidas exigem confirmação humana.
 - A análise ocorre fora do caminho crítico da criação. Falha ou indisponibilidade da IA não impede criar, consultar ou atualizar solicitações.
@@ -61,7 +63,7 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 | API-04 | Atualizar solicitação | Valida transição e permissão; persiste alteração e evento | Operadores podem atualizar solicitações da empresa; transições definidas |
 | API-05 | Registrar comentário | Valida conteúdo/acesso e associa autor e data | Solicitantes comentam as próprias solicitações; Operadores comentam todas as da empresa |
 | API-06 | Publicar contrato OpenAPI | Contrato acompanha endpoints, schemas e erros implementados | Proposto |
-| API-07 | Enfileirar análise de IA | Após criação ou solicitação explícita, cria job rastreável sem bloquear resposta HTTP | Proposto |
+| API-07 | Solicitar análise de IA | Revisão explícita de rascunho retorna sugestões estruturadas sem persistir o rascunho; triagem pós-criação é enfileirada sem bloquear a resposta HTTP | Proposto |
 | API-08 | Consultar sugestões | Retorna resumo/categoria e estado da revisão humana | Proposto |
 | API-09 | Validar autenticação | API valida credenciais SSO do Keycloak e aplica autorização no servidor | Keycloak confirmado; protocolo e claims pendentes |
 
@@ -72,7 +74,7 @@ Exemplo fictício: “Projetor da sala de reunião não liga”, categoria TI, p
 | WEB-01 | Consultar e filtrar fila | Exibe itens da API e comunica carregamento, vazio e erro | Proposto |
 | WEB-02 | Criar solicitação | Valida campos e preserva dados em erros recuperáveis | Campos definidos em P-02 |
 | WEB-03 | Consultar/atualizar detalhes | Exibe comentários, histórico e ações permitidas | Proposto |
-| WEB-04 | Revisar sugestão de IA | Pessoa pode aceitar, editar ou rejeitar; nenhuma sugestão é aplicada silenciosamente | Escopo MVP confirmado |
+| WEB-04 | Revisar sugestão de IA | Botão inicia revisão opcional e informa carregamento; painel apresenta apontamentos, perguntas e propostas de texto; cada proposta é aplicada ao campo apenas por ação explícita; usuário pode ignorar o painel e enviar; falha não bloqueia o envio | Escopo MVP confirmado |
 | WEB-05 | Exibir indicadores | Mostra métricas definidas e período/filtros de cálculo | Métrica de sucesso inicial definida; indicadores adicionais pendentes |
 | WEB-06 | Autenticar | Encaminha ao SSO do Keycloak e retorna ao fluxo com sessão autenticada | Escopo MVP confirmado; configuração pendente |
 
