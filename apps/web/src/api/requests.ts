@@ -1,4 +1,6 @@
 import type { CreateRequestInput } from "@revez/contracts";
+import type { ApiClient } from "./api-client";
+import { ApiError } from "./api-error";
 
 export type CreateRequestResponse = {
     id: string;
@@ -20,44 +22,34 @@ export class CreateRequestError extends Error {
 }
 
 export async function createRequest(
+    api: ApiClient,
     input: CreateRequestInput,
-    accessToken: string,
 ): Promise<CreateRequestResponse> {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-    if (!apiUrl) {
-        throw new Error("API URL is not defined");
-    }
-
-    const response = await fetch(`${apiUrl}/requests`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(input),
-    });
-
-    if (!response.ok) {
-        if (response.status === 400 || response.status === 422) {
-            throw new CreateRequestError("VALIDATION");
-        }
-
-        if (response.status === 401 || response.status === 403) {
-            throw new CreateRequestError("UNAUTHORIZED");
-        }
-
-        if (response.status >= 500) {
-            throw new CreateRequestError("SERVER");
-        }
-
-        throw new CreateRequestError("UNEXPECTED");
-    }
-
     let data: unknown;
+
     try {
-        data = await response.json();
-    } catch {
+        data = await api.post<unknown>("/requests", input, {
+            authenticated: true,
+        });
+    } catch (cause: unknown) {
+        if (cause instanceof ApiError) {
+            if (cause.code === "NETWORK" || cause.status === 0) {
+                throw new CreateRequestError("NETWORK");
+            }
+
+            if (cause.status === 401 || cause.status === 403) {
+                throw new CreateRequestError("UNAUTHORIZED");
+            }
+
+            if (cause.status === 400 || cause.status === 422) {
+                throw new CreateRequestError("VALIDATION");
+            }
+
+            if (cause.status >= 500) {
+                throw new CreateRequestError("SERVER");
+            }
+        }
+
         throw new CreateRequestError("UNEXPECTED");
     }
 
@@ -72,5 +64,8 @@ export async function createRequest(
         throw new CreateRequestError("UNEXPECTED");
     }
 
-    return { id: data.id, status: data.status };
-};
+    return {
+        id: data.id,
+        status: data.status,
+    };
+}

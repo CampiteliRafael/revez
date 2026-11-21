@@ -7,6 +7,7 @@ import { getCurrentUser, type CurrentUser } from '../../../api/me';
 import type { CreateRequestInput } from '@revez/contracts';
 import { createRequest } from '../../../api/requests';
 import { useAuth } from '../../../auth/auth-provider';
+import { useApi } from '../../../api/use-api';
 
 export default function RequestsPage() {
     const { logout, getAccessToken } = useAuth();
@@ -15,14 +16,14 @@ export default function RequestsPage() {
     const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
     const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
     const [actionError, setActionError] = useState<string | null>(null);
+    const api = useApi();
 
     async function handleLoadProfile() {
         setActionError(null);
         setProfileLoading(true);
 
         try {
-            const accessToken = await getAccessToken();
-            const user = await getCurrentUser(accessToken);
+            const user = await getCurrentUser(api);
             setCurrentUser(user);
         } catch (err) {
             setActionError(
@@ -33,9 +34,8 @@ export default function RequestsPage() {
         }
     }
 
-    async function handleCreateRequest(input: CreateRequestInput) {
-        const accessToken = await getAccessToken();
-        return createRequest(input, accessToken);
+    function handleCreateRequest(input: CreateRequestInput) {
+        return createRequest(api, input);
     }
 
     async function handleLogout() {
