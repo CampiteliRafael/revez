@@ -9,7 +9,7 @@ type AuthContextValue = {
     error: Error | null;
     login: () => Promise<void>;
     logout: () => Promise<void>;
-    getAccessToken:() => Promise<string>;
+    getAccessToken: () => Promise<string>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -32,7 +32,7 @@ async function getAccessToken(): Promise<string> {
     }
     await keycloak.updateToken(30);
 
-    if(!keycloak.token) {
+    if (!keycloak.token) {
         throw new Error("Access token indisponível");
     }
     return keycloak.token;
@@ -45,6 +45,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         let mounted = true;
+
+        const handleAuthSuccess = () => {
+            if (mounted) {
+                setAuthenticated(true);
+            }
+        };
+
+        const handleAuthLogout = () => {
+            if (mounted) {
+                setAuthenticated(false);
+            }
+        };
+
+        keycloak.onAuthSuccess = handleAuthSuccess;
+        keycloak.onAuthLogout = handleAuthLogout;
 
         void initializeKeycloak()
             .then((isAuthenticated) => {
@@ -63,7 +78,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             });
         return () => {
             mounted = false;
-        }
+
+            if (keycloak.onAuthSuccess === handleAuthSuccess) {
+                delete keycloak.onAuthSuccess;
+            }
+
+            if (keycloak.onAuthLogout === handleAuthLogout) {
+                delete keycloak.onAuthLogout
+            }
+        };
 
     }, []);
 
