@@ -1,7 +1,7 @@
 export type RequestOptions = {
     params?: Record<string, string | number | boolean>;
     headers?: HeadersInit;
-    authenticated: boolean;
+    authenticated?: boolean;
 }
 
 export type ApiClientConfig = {
