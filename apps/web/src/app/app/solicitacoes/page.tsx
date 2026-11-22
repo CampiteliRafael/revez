@@ -10,7 +10,7 @@ import { useAuth } from '../../../auth/auth-provider';
 import { useApi } from '../../../api/use-api';
 
 export default function RequestsPage() {
-    const { logout, getAccessToken } = useAuth();
+    const { logout } = useAuth();
     const [profileLoading, setProfileLoading] = useState(false);
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);

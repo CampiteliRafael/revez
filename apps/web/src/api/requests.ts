@@ -37,16 +37,19 @@ export async function createRequest(
                 throw new CreateRequestError("NETWORK");
             }
 
-            if (cause.status === 401 || cause.status === 403) {
-                throw new CreateRequestError("UNAUTHORIZED");
-            }
-
             if (cause.status === 400 || cause.status === 422) {
                 throw new CreateRequestError("VALIDATION");
             }
 
             if (cause.status >= 500) {
                 throw new CreateRequestError("SERVER");
+            }
+            if (
+                cause.code === "AUTH_TOKEN" ||
+                cause.status === 401 ||
+                cause.status === 403
+            ) {
+                throw new CreateRequestError("UNAUTHORIZED");
             }
         }
 

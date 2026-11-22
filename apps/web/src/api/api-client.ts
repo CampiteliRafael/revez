@@ -52,18 +52,41 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
         }
 
         if (options.authenticated) {
-            const token = await config.getAccessToken();
+            let token: string;
+
+            try {
+                token = await config.getAccessToken();
+            } catch {
+                throw new ApiError(
+                    'Não foi possível obter um token válido. Verifique sua sessão.',
+                    401,
+                    'AUTH_TOKEN'
+                );
+            }
+
             headers.set('Authorization', `Bearer ${token}`);
         }
 
+        let requestBody: string | undefined;
         let response: Response;
+        try {
+            if (body !== undefined) {
+                requestBody = JSON.stringify(body);
+            }
+        } catch {
+            throw new ApiError(
+                'Não foi possível serializar os dados da requisição.',
+                0,
+                'INVALID_REQUEST'
+            );
+        }
 
         try {
             response = await fetch(url, {
                 method,
                 headers,
-                ...(body !== undefined && {
-                    body: JSON.stringify(body)
+                ...(requestBody !== undefined && {
+                    body: requestBody
                 }),
             });
         } catch {
@@ -75,14 +98,21 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
         }
 
         const contentType = response.headers.get('content-type');
+        const isJson = contentType?.toLowerCase().includes('json');
 
         let data: unknown = undefined;
+        let responseParseError = false;
 
         if (response.status !== 204) {
-            if (contentType?.includes('application/json')) {
-                data = await response.json();
-            } else {
-                data = await response.text();
+
+            try {
+                if (isJson) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+            } catch {
+                responseParseError = true;
             }
         }
 
@@ -114,6 +144,14 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
                 response.status,
                 code,
                 details
+            );
+        }
+
+        if (responseParseError) {
+            throw new ApiError(
+                'A API retornou uma resposta inválida.',
+                response.status,
+                'INVALID_RESPONSE'
             );
         }
 
