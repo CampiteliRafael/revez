@@ -10,11 +10,13 @@ import { createRequestsRouter } from "./requests/requests-routes";
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors({
-  origin: "http://localhost:3001",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 app.use(express.json());
 
@@ -32,7 +34,7 @@ app.get("/health", async (_req, res) => {
 });
 
 app.get("/me", authMiddleware, (req, res) => {
-  if(!req.user) {
+  if (!req.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -53,17 +55,22 @@ app.get("/operator-check", authMiddleware, requireOperator, (req, res) => {
   });
 });
 
-const errorHandler: ErrorRequestHandler = (err: Error, _req: express.Request, res: express.Response, next: express.NextFunction) => {
-console.error("Unhandled API error:", err);
-if(res.headersSent) {
-  next(err);
-  return;
-}
-res.status(500).json({ message: "Internal Server Error" });
-}
+const errorHandler: ErrorRequestHandler = (
+  err: Error,
+  _req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  console.error("Unhandled API error:", err);
+  if (res.headersSent) {
+    next(err);
+    return;
+  }
+  res.status(500).json({ message: "Internal Server Error" });
+};
 
 app.use(errorHandler);
-  
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

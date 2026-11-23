@@ -28,12 +28,12 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
-      retries: 10 
+      retries: 10
       start_period: 5s
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.8.2
-    command: start-dev  
+    command: start-dev
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Configure KEYCLOAK_ADMIN_PASSWORD no .env}

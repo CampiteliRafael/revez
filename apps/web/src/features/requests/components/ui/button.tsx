@@ -4,19 +4,17 @@ import styles from "./button.module.css";
 type ButtonVariant = "primary" | "secondary";
 
 type ButtonProps = ComponentProps<"button"> & {
-    variant?: ButtonVariant;
+  variant?: ButtonVariant;
 };
 
 export function Button({
-    className,
-    variant = "primary",
-    ...props
+  className,
+  variant = "primary",
+  ...props
 }: ButtonProps) {
-    const classes = [
-        styles.button,
-        styles[variant],
-        className,
-    ].filter(Boolean).join(" ");
+  const classes = [styles.button, styles[variant], className]
+    .filter(Boolean)
+    .join(" ");
 
-    return <button {...props} className={classes} />;
+  return <button {...props} className={classes} />;
 }

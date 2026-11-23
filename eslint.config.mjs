@@ -12,7 +12,7 @@ export default tseslint.config(
       "**/coverage/**",
     ],
     rules: {
-      "@typescript-eslint/no-namespace": ["error", { "allowDeclarations": true }],
+      "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
     },
   },
   eslint.configs.recommended,
