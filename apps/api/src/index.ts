@@ -53,7 +53,7 @@ app.get("/operator-check", authMiddleware, requireOperator, (req, res) => {
   });
 });
 
-const errorHandler: ErrorRequestHandler = (err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+const errorHandler: ErrorRequestHandler = (err: Error, _req: express.Request, res: express.Response, next: express.NextFunction) => {
 console.error("Unhandled API error:", err);
 if(res.headersSent) {
   next(err);

@@ -11,6 +11,9 @@ export default tseslint.config(
       "**/.expo/**",
       "**/coverage/**",
     ],
+    rules: {
+      "@typescript-eslint/no-namespace": ["error", { "allowDeclarations": true }],
+    },
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
