@@ -29,7 +29,7 @@ export async function createRequest(
     });
   } catch (cause: unknown) {
     if (cause instanceof ApiError) {
-      if (cause.code === "NETWORK" || cause.status === 0) {
+      if (cause.code === "NETWORK") {
         throw new CreateRequestError("NETWORK");
       }
 
