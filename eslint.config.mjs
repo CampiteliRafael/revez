@@ -1,16 +1,18 @@
 import eslint from "@eslint/js";
 import prettier from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
+import { globalIgnores } from "eslint/config";
 
 export default tseslint.config(
+  globalIgnores([
+    "**/.next/**",
+    "**/out/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/coverage/**",
+  ]),
   {
-    ignores: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/.next/**",
-      "**/.expo/**",
-      "**/coverage/**",
-    ],
     rules: {
       "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
     },
