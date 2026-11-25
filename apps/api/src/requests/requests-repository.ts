@@ -41,7 +41,7 @@ export const requestsRepository: RequestsRepository &
       };
     });
   },
-  
+
   async listRequests({ page, pageSize, createdById }) {
     const where = {
       ...(createdById ? { createdById } : {}),
