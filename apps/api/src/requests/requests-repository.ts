@@ -1,7 +1,11 @@
 import { prisma } from "../prisma";
-import type { RequestsRepository } from "./requests-use-case";
+import type {
+  RequestsRepository,
+  RequestsListingRepository,
+} from "./requests-use-case";
 
-export const requestsRepository: RequestsRepository = {
+export const requestsRepository: RequestsRepository &
+  RequestsListingRepository = {
   async createRequest({ input, creatorId }) {
     return prisma.$transaction(async (tx) => {
       await tx.user.upsert({
@@ -36,5 +40,60 @@ export const requestsRepository: RequestsRepository = {
         status: "NEW",
       };
     });
+  },
+  
+  async listRequests({ page, pageSize, createdById }) {
+    const where = {
+      ...(createdById ? { createdById } : {}),
+    };
+
+    const [items, totalItems] = await Promise.all([
+      prisma.request.findMany({
+        where,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          category: true,
+          priority: true,
+          status: true,
+          dueDate: true,
+          createdAt: true,
+          updatedAt: true,
+          creator: {
+            select: {
+              id: true,
+              displayName: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              displayName: true,
+            },
+          },
+        },
+      }),
+
+      prisma.request.count({ where }),
+    ]);
+
+    return {
+      items: items.map(({ creator, ...request }) => ({
+        ...request,
+        createdBy: creator,
+      })),
+      pagination: {
+        page,
+        pageSize,
+        totalItems,
+        totalPages: Math.ceil(totalItems / pageSize),
+      },
+    };
   },
 };
