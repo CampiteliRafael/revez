@@ -5,11 +5,17 @@ const mocks = vi.hoisted(() => ({
   requestCreate: vi.fn(),
   requestEventCreate: vi.fn(),
   transaction: vi.fn(),
+  requestFindMany: vi.fn(),
+  requestCount: vi.fn(),
 }));
 
 vi.mock("../prisma", () => ({
   prisma: {
     $transaction: mocks.transaction,
+    request: {
+      findMany: mocks.requestFindMany,
+      count: mocks.requestCount,
+    },
   },
 }));
 
@@ -19,6 +25,8 @@ describe("requestsRepository", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
+    mocks.requestFindMany.mockResolvedValue([]);
+    mocks.requestCount.mockResolvedValue(0);
     mocks.userUpsert.mockResolvedValue({});
     mocks.requestCreate.mockResolvedValue({ id: "request-123" });
     mocks.requestEventCreate.mockResolvedValue({});
@@ -103,5 +111,107 @@ describe("requestsRepository", () => {
         },
       }),
     ).rejects.toThrow("Database error");
+  });
+
+  it("should list requests with pagination and newest first ordering", async () => {
+    await requestsRepository.listRequests({
+      page: 2,
+      pageSize: 10,
+    });
+
+    expect(mocks.requestFindMany).toHaveBeenCalledWith({
+      where: {},
+      skip: 10,
+      take: 10,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: expect.any(Object),
+    });
+
+    expect(mocks.requestCount).toHaveBeenCalledWith({
+      where: {},
+    });
+  });
+
+  it("should filter requests by creator when createdById is provided", async () => {
+    await requestsRepository.listRequests({
+      page: 1,
+      pageSize: 20,
+      createdById: "user-123",
+    });
+
+    expect(mocks.requestFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          createdById: "user-123",
+        },
+      }),
+    );
+
+    expect(mocks.requestCount).toHaveBeenCalledWith({
+      where: {
+        createdById: "user-123",
+      },
+    });
+  });
+
+  it("should return requests with pagination metadata and createdBy", async () => {
+    const createdAt = new Date("2026-11-26T10:00:00.000Z");
+    const updatedAt = new Date("2026-11-26T11:00:00.000Z");
+    const dueDate = new Date("2026-12-01T00:00:00.000Z");
+
+    mocks.requestFindMany.mockResolvedValue([
+      {
+        id: "request-123",
+        title: "Computer maintenance",
+        description: "Computer is not working",
+        category: "IT",
+        priority: "HIGH",
+        status: "NEW",
+        dueDate,
+        createdAt,
+        updatedAt,
+        creator: {
+          id: "user-123",
+          displayName: "Rafael",
+        },
+        assignee: null,
+      },
+    ]);
+
+    mocks.requestCount.mockResolvedValue(35);
+
+    const result = await requestsRepository.listRequests({
+      page: 2,
+      pageSize: 10,
+    });
+
+    expect(result).toEqual({
+      items: [
+        {
+          id: "request-123",
+          title: "Computer maintenance",
+          description: "Computer is not working",
+          category: "IT",
+          priority: "HIGH",
+          status: "NEW",
+          dueDate,
+          createdAt,
+          updatedAt,
+          createdBy: {
+            id: "user-123",
+            displayName: "Rafael",
+          },
+          assignee: null,
+        },
+      ],
+      pagination: {
+        page: 2,
+        pageSize: 10,
+        totalItems: 35,
+        totalPages: 4,
+      },
+    });
   });
 });

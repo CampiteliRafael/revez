@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   verifyAccessToken: vi.fn(),
   createRequest: vi.fn(),
   queryRaw: vi.fn(),
+  listRequests: vi.fn(),
 }));
 
 vi.mock("./auth/keycloak", () => ({
@@ -22,6 +23,7 @@ vi.mock("./prisma", () => ({
 vi.mock("./requests/requests-repository", () => ({
   requestsRepository: {
     createRequest: mocks.createRequest,
+    listRequests: mocks.listRequests,
   },
 }));
 
@@ -103,6 +105,166 @@ describe("API", () => {
 
       expect(response.status).toBe(401);
       expect(mocks.createRequest).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("GET /requests", () => {
+    it("should list all requests when the user is an operator", async () => {
+      mocks.verifyAccessToken.mockResolvedValue({
+        userId: "operator-123",
+        groups: ["operators"],
+      });
+
+      mocks.listRequests.mockResolvedValue({
+        items: [],
+        pagination: {
+          page: 1,
+          pageSize: 20,
+          totalItems: 0,
+          totalPages: 0,
+        },
+      });
+
+      const response = await request(app)
+        .get("/requests")
+        .set("Authorization", "Bearer valid-token");
+
+      expect(response.status).toBe(200);
+
+      expect(response.body).toEqual({
+        items: [],
+        pagination: {
+          page: 1,
+          pageSize: 20,
+          totalItems: 0,
+          totalPages: 0,
+        },
+      });
+
+      expect(mocks.listRequests).toHaveBeenCalledWith({
+        page: 1,
+        pageSize: 20,
+      });
+    });
+
+    it("should list only the requester's requests when the user is not an operator", async () => {
+      mocks.verifyAccessToken.mockResolvedValue({
+        userId: "user-123",
+        groups: [],
+      });
+
+      mocks.listRequests.mockResolvedValue({
+        items: [],
+        pagination: {
+          page: 1,
+          pageSize: 20,
+          totalItems: 0,
+          totalPages: 0,
+        },
+      });
+
+      const response = await request(app)
+        .get("/requests")
+        .set("Authorization", "Bearer valid-token");
+
+      expect(response.status).toBe(200);
+
+      expect(mocks.listRequests).toHaveBeenCalledWith({
+        page: 1,
+        pageSize: 20,
+        createdById: "user-123",
+      });
+    });
+
+    it("should use custom pagination parameters", async () => {
+      mocks.verifyAccessToken.mockResolvedValue({
+        userId: "operator-123",
+        groups: ["operators"],
+      });
+
+      mocks.listRequests.mockResolvedValue({
+        items: [],
+        pagination: {
+          page: 3,
+          pageSize: 10,
+          totalItems: 25,
+          totalPages: 3,
+        },
+      });
+
+      const response = await request(app)
+        .get("/requests?page=3&pageSize=10")
+        .set("Authorization", "Bearer valid-token");
+
+      expect(response.status).toBe(200);
+
+      expect(mocks.listRequests).toHaveBeenCalledWith({
+        page: 3,
+        pageSize: 10,
+      });
+
+      expect(response.body.pagination).toEqual({
+        page: 3,
+        pageSize: 10,
+        totalItems: 25,
+        totalPages: 3,
+      });
+    });
+
+    it("should return 400 when page is less than 1", async () => {
+      mocks.verifyAccessToken.mockResolvedValue({
+        userId: "operator-123",
+        groups: ["operators"],
+      });
+
+      const response = await request(app)
+        .get("/requests?page=0")
+        .set("Authorization", "Bearer valid-token");
+
+      expect(response.status).toBe(400);
+      expect(mocks.listRequests).not.toHaveBeenCalled();
+    });
+
+    it("should return 400 when pageSize is greater than 100", async () => {
+      mocks.verifyAccessToken.mockResolvedValue({
+        userId: "operator-123",
+        groups: ["operators"],
+      });
+
+      const response = await request(app)
+        .get("/requests?pageSize=101")
+        .set("Authorization", "Bearer valid-token");
+
+      expect(response.status).toBe(400);
+      expect(mocks.listRequests).not.toHaveBeenCalled();
+    });
+
+    it("should return 400 when page is not a valid number", async () => {
+      mocks.verifyAccessToken.mockResolvedValue({
+        userId: "operator-123",
+        groups: ["operators"],
+      });
+
+      const response = await request(app)
+        .get("/requests?page=abc")
+        .set("Authorization", "Bearer valid-token");
+
+      expect(response.status).toBe(400);
+      expect(mocks.listRequests).not.toHaveBeenCalled();
+    });
+
+    it("should return 400 when page is not an integer", async () => {
+      mocks.verifyAccessToken.mockResolvedValue({
+        userId: "operator-123",
+        groups: ["operators"],
+      });
+
+      const response = await request(app)
+        .get("/requests?page=1.5")
+        .set("Authorization", "Bearer valid-token");
+
+      expect(response.status).toBe(400);
+      expect(mocks.listRequests).not.toHaveBeenCalled();
     });
   });
 
