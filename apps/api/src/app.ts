@@ -4,7 +4,10 @@ import cors from "cors";
 import { authMiddleware } from "./middleware/auth";
 import { requireOperator } from "./middleware/require-operator";
 import { requestsRepository } from "./requests/requests-repository";
-import { makeCreateRequestUseCase } from "./requests/requests-use-case";
+import {
+  makeCreateRequestUseCase,
+  makeListRequestsUseCase,
+} from "./requests/requests-use-case";
 import { createRequestsRouter } from "./requests/requests-routes";
 
 const app = express();
@@ -20,7 +23,11 @@ app.use(
 app.use(express.json());
 
 const createRequestUseCase = makeCreateRequestUseCase(requestsRepository);
-app.use("/requests", createRequestsRouter(createRequestUseCase));
+const listRequestsUseCase = makeListRequestsUseCase(requestsRepository);
+app.use(
+  "/requests",
+  createRequestsRouter(createRequestUseCase, listRequestsUseCase),
+);
 
 app.get("/health", async (_req, res) => {
   try {

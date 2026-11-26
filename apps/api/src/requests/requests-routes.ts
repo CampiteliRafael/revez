@@ -1,10 +1,19 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth";
-import { createRequestController } from "./requests-controller";
+import {
+  createRequestController,
+  listRequestsController,
+} from "./requests-controller";
 import { validateCreateRequest } from "./validate-create-request";
-import type { CreateRequestUseCase } from "./requests-use-case";
+import type {
+  CreateRequestUseCase,
+  ListRequestsUseCase,
+} from "./requests-use-case";
 
-export function createRequestsRouter(createRequest: CreateRequestUseCase) {
+export function createRequestsRouter(
+  createRequest: CreateRequestUseCase,
+  listRequests: ListRequestsUseCase,
+) {
   const router = Router();
 
   router.post(
@@ -13,5 +22,7 @@ export function createRequestsRouter(createRequest: CreateRequestUseCase) {
     validateCreateRequest,
     createRequestController(createRequest),
   );
+
+  router.get("/", authMiddleware, listRequestsController(listRequests));
   return router;
 }
